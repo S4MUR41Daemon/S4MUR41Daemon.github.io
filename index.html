@@ -1,0 +1,1319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S4MUR41DAEMON · Portfolio</title>
+    <link rel="icon" href="AssetsMios/MyIcon.png" type="image/png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Share+Tech+Mono&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ═══════════════════════════════════════
+           VARIABLES
+        ═══════════════════════════════════════ */
+        :root {
+            --bg:           #04000a;
+            --bg2:          #070010;
+            --bg-card:      #0b0018;
+            --bg-card-h:    #130023;
+            --border:       #1c0035;
+            --border-glow:  #4d009a;
+            --purple:       #b800ff;
+            --purple-dim:   #7a00aa;
+            --cyan:         #00e5ff;
+            --pink:         #ff0090;
+            --green:        #39ff14;
+            --yellow:       #ffe600;
+            --text:         #e0e0e0;
+            --text-muted:   #4e4e66;
+            --text-code:    #cc99ff;
+            --font-hd:      'Orbitron', monospace;
+            --font-mono:    'Share Tech Mono', monospace;
+            --font-ui:      'Rajdhani', sans-serif;
+        }
+
+        /* ═══════════════════════════════════════
+           RESET
+        ═══════════════════════════════════════ */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; font-size: 16px; }
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--font-ui);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+        a { color: inherit; text-decoration: none; }
+        ul { list-style: none; }
+
+        /* ═══════════════════════════════════════
+           SCROLLBAR
+        ═══════════════════════════════════════ */
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--purple-dim); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--purple); }
+
+        /* ═══════════════════════════════════════
+           BACKGROUND LAYERS
+        ═══════════════════════════════════════ */
+        .bg-aura {
+            position: fixed; inset: 0; pointer-events: none; z-index: 0;
+            background:
+                radial-gradient(ellipse 70% 60% at 15% 60%, rgba(100,0,160,0.18) 0%, transparent 70%),
+                radial-gradient(ellipse 50% 40% at 85% 15%, rgba(0,140,200,0.10) 0%, transparent 65%),
+                radial-gradient(ellipse 60% 50% at 50% 105%, rgba(200,0,100,0.08) 0%, transparent 60%);
+        }
+        .bg-grid {
+            position: fixed; inset: 0; pointer-events: none; z-index: 0;
+            background-image:
+                linear-gradient(rgba(120,0,200,0.06) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(120,0,200,0.06) 1px, transparent 1px);
+            background-size: 55px 55px;
+        }
+        .scanlines {
+            position: fixed; inset: 0; pointer-events: none; z-index: 9999;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(0,0,0,0.07) 2px,
+                rgba(0,0,0,0.07) 4px
+            );
+        }
+        .orb {
+            position: fixed; border-radius: 50%;
+            pointer-events: none; z-index: 0;
+            filter: blur(80px); opacity: 0.15;
+            animation: orb-float 12s ease-in-out infinite alternate;
+        }
+        .orb-1 { width:400px; height:400px; background:var(--purple); top:-100px; left:-100px; animation-duration:14s; }
+        .orb-2 { width:300px; height:300px; background:var(--cyan); bottom:10%; right:-80px; animation-duration:10s; animation-delay:-5s; }
+        .orb-3 { width:250px; height:250px; background:var(--pink); top:40%; left:60%; animation-duration:18s; animation-delay:-8s; }
+        @keyframes orb-float {
+            0%   { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(30px, 40px) scale(1.1); }
+        }
+
+        /* ═══════════════════════════════════════
+           LANGUAGE TOGGLE
+        ═══════════════════════════════════════ */
+        .lang-toggle {
+            display: flex; align-items: center; gap: 2px;
+            background: rgba(13,0,24,0.9);
+            border: 1px solid var(--border-glow);
+            border-radius: 20px;
+            padding: 3px 6px;
+            cursor: pointer;
+            user-select: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            flex-shrink: 0;
+        }
+        .lang-toggle:hover {
+            border-color: var(--purple);
+            box-shadow: 0 0 10px rgba(184,0,255,0.3);
+        }
+        .lang-btn {
+            font-family: var(--font-hd);
+            font-size: 0.6rem;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            padding: 3px 7px;
+            border-radius: 14px;
+            color: var(--text-muted);
+            transition: color 0.2s, background 0.2s;
+        }
+        .lang-btn.active {
+            color: var(--purple);
+            background: rgba(184,0,255,0.14);
+        }
+        .lang-sep {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: var(--border-glow);
+            padding: 0 1px;
+        }
+
+        /* ═══════════════════════════════════════
+           NAVBAR
+        ═══════════════════════════════════════ */
+        #navbar {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            height: 58px;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 2rem;
+            background: rgba(4,0,10,0.88);
+            backdrop-filter: blur(14px);
+            border-bottom: 1px solid var(--border);
+            box-shadow: 0 1px 0 rgba(184,0,255,0.25), 0 4px 20px rgba(0,0,0,0.5);
+            gap: 1rem;
+        }
+        .nav-left {
+            display: flex; align-items: center; gap: 0.9rem;
+            flex-shrink: 0;
+        }
+        .nav-brand {
+            font-family: var(--font-hd);
+            font-size: 0.62rem;
+            letter-spacing: 2px;
+            color: var(--text-code);
+            white-space: nowrap;
+        }
+        .nav-brand .nb-bracket { color: var(--purple); }
+        .nav-brand .nb-host   { color: var(--cyan); }
+
+        .nav-links {
+            display: flex; gap: 0.15rem; align-items: center;
+        }
+        .nav-links a {
+            font-family: var(--font-mono);
+            font-size: 0.76rem;
+            color: var(--text-muted);
+            padding: 0.28rem 0.7rem;
+            border-radius: 4px;
+            border: 1px solid transparent;
+            transition: color 0.2s, border-color 0.2s, text-shadow 0.2s;
+        }
+        .nav-links a:hover {
+            color: var(--cyan);
+            border-color: rgba(0,229,255,0.25);
+            text-shadow: 0 0 8px var(--cyan);
+        }
+        .nav-links a.active {
+            color: var(--purple);
+            border-color: rgba(184,0,255,0.4);
+            text-shadow: 0 0 10px var(--purple);
+        }
+        .nav-cv {
+            font-family: var(--font-hd);
+            font-size: 0.6rem;
+            letter-spacing: 1.5px;
+            padding: 0.32rem 0.85rem;
+            border-radius: 4px;
+            background: transparent;
+            border: 1px solid var(--purple);
+            color: var(--purple);
+            cursor: pointer;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+        .nav-cv:hover {
+            background: rgba(184,0,255,0.12);
+            box-shadow: 0 0 16px rgba(184,0,255,0.4);
+        }
+
+        .nav-toggle {
+            display: none;
+            flex-direction: column; gap: 5px; cursor: pointer;
+            padding: 4px; background: none; border: none;
+        }
+        .nav-toggle span {
+            display: block; width: 22px; height: 2px;
+            background: var(--purple);
+            border-radius: 2px;
+            transition: all 0.3s;
+        }
+
+        /* ═══════════════════════════════════════
+           SECTIONS
+        ═══════════════════════════════════════ */
+        section {
+            position: relative; z-index: 1;
+            padding: 110px 2.5rem 80px;
+            max-width: 1120px;
+            margin: 0 auto;
+        }
+        .section-title {
+            font-family: var(--font-hd);
+            font-size: clamp(1.4rem, 3.5vw, 2.2rem);
+            font-weight: 700;
+            margin-bottom: 3rem;
+            letter-spacing: 2px;
+        }
+        .section-title .t-dot   { color: var(--cyan); }
+        .section-title .t-slash { color: var(--purple); }
+
+        .divider {
+            border: none; height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border-glow), transparent);
+            position: relative; z-index: 1;
+        }
+
+        /* ═══════════════════════════════════════
+           TERMINAL WINDOW
+        ═══════════════════════════════════════ */
+        .term-win {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glow);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 0 40px rgba(77,0,154,0.2), inset 0 0 80px rgba(0,0,0,0.4);
+        }
+        .term-bar {
+            background: #0a001a;
+            padding: 0.55rem 1rem;
+            display: flex; align-items: center; gap: 0.45rem;
+            border-bottom: 1px solid var(--border);
+        }
+        .term-bar .dot { width:11px; height:11px; border-radius:50%; }
+        .dot-red { background:#ff5f57; }
+        .dot-yel { background:#febc2e; }
+        .dot-grn { background:#28c840; }
+        .term-bar .term-path {
+            font-family: var(--font-mono); font-size: 0.72rem;
+            color: var(--text-muted); margin-left: auto;
+        }
+        .term-body {
+            padding: 2rem 2.2rem;
+            font-family: var(--font-mono);
+            font-size: 0.88rem;
+        }
+
+        /* ═══════════════════════════════════════
+           HERO
+        ═══════════════════════════════════════ */
+        #home {
+            min-height: 100vh;
+            display: flex; align-items: center;
+            padding-top: 80px;
+        }
+        .hero-inner {
+            display: flex; align-items: center;
+            justify-content: space-between;
+            gap: 4rem; width: 100%;
+        }
+        .hero-left  { flex: 1; }
+        .hero-right { flex-shrink: 0; }
+
+        .hero-prompt {
+            font-family: var(--font-mono);
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            margin-bottom: 1.8rem;
+            display: flex; align-items: center; gap: 0.4rem;
+        }
+        .hp-bracket { color: var(--border-glow); }
+        .hp-host    { color: var(--cyan); }
+        .hp-path    { color: var(--purple-dim); }
+        .hp-cmd     { color: var(--text); }
+        .cursor-blink {
+            display: inline-block;
+            width: 8px; height: 1.1em;
+            background: var(--cyan);
+            vertical-align: text-bottom;
+            margin-left: 3px;
+            animation: blink 1s step-end infinite;
+        }
+        @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0;} }
+
+        .hero-name {
+            font-family: var(--font-hd);
+            font-size: clamp(2.2rem, 5.5vw, 4.8rem);
+            font-weight: 900;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: #fff;
+            position: relative;
+            display: inline-block;
+            margin-bottom: 0.4rem;
+            text-shadow: 0 0 30px rgba(184,0,255,0.55), 0 0 60px rgba(184,0,255,0.25);
+        }
+        .hero-name::before,
+        .hero-name::after {
+            content: attr(data-text);
+            position: absolute; top:0; left:0;
+            width:100%; height:100%;
+            opacity: 0;
+        }
+        .hero-name::before { color:var(--cyan);  animation:glitch-a 5s infinite; }
+        .hero-name::after  { color:var(--pink);  animation:glitch-b 5s infinite; }
+
+        @keyframes glitch-a {
+            0%,88%,100% { opacity:0; transform:translate(0); clip-path:none; }
+            89%  { opacity:.85; transform:translate(-4px, 2px); clip-path:polygon(0 18%,100% 18%,100% 33%,0 33%); }
+            91%  { opacity:.85; transform:translate(4px,-2px);  clip-path:polygon(0 65%,100% 65%,100% 80%,0 80%); }
+            93%  { opacity:0; }
+        }
+        @keyframes glitch-b {
+            0%,90%,100% { opacity:0; transform:translate(0); clip-path:none; }
+            91%  { opacity:.7; transform:translate(4px,-1px); clip-path:polygon(0 44%,100% 44%,100% 58%,0 58%); }
+            94%  { opacity:.7; transform:translate(-4px,1px); clip-path:polygon(0 4%,100% 4%,100% 18%,0 18%); }
+            96%  { opacity:0; }
+        }
+
+        .hero-realname {
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 1.6rem;
+        }
+        .hero-subtitle {
+            font-size: clamp(0.95rem, 2.2vw, 1.2rem);
+            font-weight: 400;
+            color: var(--text);
+            margin-bottom: 1.8rem;
+            line-height: 1.9;
+        }
+        .hl-cyan   { color: var(--cyan);   font-weight: 600; }
+        .hl-purple { color: var(--purple); font-weight: 600; }
+        .hl-pink   { color: var(--pink);   font-weight: 600; }
+        .sep-bar   { color: var(--border-glow); margin: 0 0.5rem; }
+
+        .hero-status {
+            display: flex; align-items: center;
+            gap: 1.5rem; flex-wrap: wrap;
+            margin-bottom: 2.4rem;
+            font-family: var(--font-mono);
+            font-size: 0.78rem;
+            color: var(--text-muted);
+        }
+        .status-avail {
+            display: flex; align-items: center; gap: 0.45rem;
+            color: var(--green);
+        }
+        .status-avail::before {
+            content:'●'; font-size: 0.6rem;
+            animation: pulse-dot 2s ease-in-out infinite;
+        }
+        @keyframes pulse-dot {
+            0%,100% { text-shadow:0 0 4px var(--green); }
+            50%     { text-shadow:0 0 14px var(--green), 0 0 28px var(--green); }
+        }
+
+        .hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; }
+        .btn {
+            font-family: var(--font-hd);
+            font-size: 0.65rem; font-weight: 700;
+            letter-spacing: 2px; text-transform: uppercase;
+            padding: 0.72rem 1.5rem;
+            border-radius: 5px; cursor: pointer; border: 1px solid;
+            transition: all 0.25s ease;
+            display: inline-flex; align-items: center; gap: 0.45rem;
+        }
+        .btn-primary {
+            background: var(--purple); border-color: var(--purple); color: #fff;
+            box-shadow: 0 0 22px rgba(184,0,255,0.45);
+        }
+        .btn-primary:hover {
+            background: transparent; color: var(--purple);
+            box-shadow: 0 0 35px rgba(184,0,255,0.65);
+        }
+        .btn-ghost {
+            background: transparent; border-color: var(--cyan); color: var(--cyan);
+            box-shadow: 0 0 12px rgba(0,229,255,0.15);
+        }
+        .btn-ghost:hover {
+            background: rgba(0,229,255,0.08);
+            box-shadow: 0 0 25px rgba(0,229,255,0.4);
+        }
+        .btn-ghost-pink {
+            background: transparent; border-color: var(--pink); color: var(--pink);
+            box-shadow: 0 0 12px rgba(255,0,144,0.15);
+        }
+        .btn-ghost-pink:hover {
+            background: rgba(255,0,144,0.08);
+            box-shadow: 0 0 25px rgba(255,0,144,0.4);
+        }
+
+        .icon-wrap {
+            width: 270px; height: 270px;
+            position: relative;
+        }
+        .icon-wrap::before {
+            content: '';
+            position: absolute; inset: -3px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, var(--purple), var(--cyan), var(--pink), var(--purple));
+            z-index: -1;
+            background-size: 300% 300%;
+            animation: grad-spin 5s linear infinite;
+        }
+        @keyframes grad-spin {
+            0%   { background-position: 0% 50%; filter: hue-rotate(0deg); }
+            100% { background-position: 100% 50%; filter: hue-rotate(360deg); }
+        }
+        .icon-wrap img {
+            width:100%; height:100%;
+            object-fit: cover; border-radius: 18px;
+            display: block; position: relative; z-index: 1;
+        }
+        .icon-glow {
+            position: absolute; inset: -30px; border-radius: 50%;
+            background: radial-gradient(circle, rgba(184,0,255,0.35) 0%, transparent 65%);
+            z-index: -2;
+            animation: icon-pulse 3.5s ease-in-out infinite;
+        }
+        @keyframes icon-pulse {
+            0%,100% { opacity:.5; transform:scale(1); }
+            50%     { opacity:.9; transform:scale(1.08); }
+        }
+        .icon-tag {
+            position: absolute; bottom: -14px; left: 50%;
+            transform: translateX(-50%);
+            font-family: var(--font-mono); font-size: 0.68rem;
+            color: var(--purple);
+            background: var(--bg-card);
+            border: 1px solid var(--border-glow);
+            padding: 0.2rem 0.8rem;
+            border-radius: 4px; white-space: nowrap; z-index: 2;
+        }
+
+        /* ═══════════════════════════════════════
+           ABOUT
+        ═══════════════════════════════════════ */
+        .about-line {
+            margin-bottom: 1.1rem; color: var(--text);
+            font-size: 0.88rem; line-height: 1.8;
+        }
+        .about-line:last-child { margin-bottom: 0; }
+        .al-prompt { color: var(--purple); margin-right: 0.8rem; user-select: none; }
+        .al-hl  { color: var(--cyan); }
+        .al-hl2 { color: var(--pink); }
+
+        /* ═══════════════════════════════════════
+           SKILLS
+        ═══════════════════════════════════════ */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(235px, 1fr));
+            gap: 1.4rem;
+        }
+        .skill-card {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 10px; padding: 1.8rem;
+            transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+            position: relative; overflow: hidden;
+        }
+        .skill-card::after {
+            content: '';
+            position: absolute; bottom:0; left:0; right:0; height:2px;
+            background: linear-gradient(90deg, var(--purple), var(--cyan));
+            transform: scaleX(0); transition: transform 0.35s; transform-origin: left;
+        }
+        .skill-card:hover {
+            border-color: var(--border-glow);
+            box-shadow: 0 0 28px rgba(77,0,154,0.3), 0 8px 24px rgba(0,0,0,0.3);
+            transform: translateY(-4px);
+        }
+        .skill-card:hover::after { transform: scaleX(1); }
+        .skill-icon  { font-size: 2rem; margin-bottom: 0.9rem; }
+        .skill-label {
+            font-family: var(--font-hd); font-size: 0.65rem; font-weight: 700;
+            letter-spacing: 3px; text-transform: uppercase;
+            color: var(--text-muted); margin-bottom: 1rem;
+        }
+        .tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+        .tag {
+            font-family: var(--font-mono); font-size: 0.72rem;
+            padding: 0.18rem 0.6rem; border-radius: 4px; border: 1px solid;
+            transition: box-shadow 0.2s;
+        }
+        .tag:hover { box-shadow: 0 0 8px currentColor; }
+        .t-p { border-color: rgba(184,0,255,.4);  color:#d090ff; background:rgba(184,0,255,.07); }
+        .t-c { border-color: rgba(0,229,255,.4);  color:#80eeff; background:rgba(0,229,255,.07); }
+        .t-k { border-color: rgba(255,0,144,.4);  color:#ff99cc; background:rgba(255,0,144,.07); }
+        .t-y { border-color: rgba(255,230,0,.4);  color:#ffe060; background:rgba(255,230,0,.07); }
+
+        /* ═══════════════════════════════════════
+           PROJECTS
+        ═══════════════════════════════════════ */
+        .projects-header {
+            display: flex; align-items: baseline;
+            justify-content: space-between;
+            margin-bottom: 3rem; flex-wrap: wrap; gap: 1rem;
+        }
+        .projects-header .section-title { margin-bottom: 0; }
+        .gh-link {
+            font-family: var(--font-mono); font-size: 0.78rem;
+            color: var(--text-muted); border: 1px solid var(--border);
+            padding: 0.35rem 0.9rem; border-radius: 5px; transition: all 0.2s;
+        }
+        .gh-link:hover {
+            color: var(--cyan); border-color: rgba(0,229,255,.4);
+            text-shadow: 0 0 8px var(--cyan);
+        }
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.4rem;
+        }
+        .proj-card {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 10px; padding: 1.8rem;
+            display: flex; flex-direction: column;
+            transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+            position: relative; overflow: hidden;
+        }
+        .proj-card::before {
+            content:'';
+            position: absolute; top:0; left:0; right:0; height:2px;
+            background: linear-gradient(90deg, var(--purple), var(--pink), var(--cyan));
+            opacity:0; transition: opacity 0.3s;
+        }
+        .proj-card:hover {
+            border-color: rgba(184,0,255,.45);
+            box-shadow: 0 0 32px rgba(184,0,255,.15), 0 10px 30px rgba(0,0,0,.35);
+            transform: translateY(-5px);
+        }
+        .proj-card:hover::before { opacity:1; }
+        .proj-feat {
+            font-family: var(--font-mono); font-size: 0.62rem;
+            color: var(--pink); border: 1px solid rgba(255,0,144,.4);
+            padding: 0.14rem 0.5rem; border-radius: 3px;
+            display: inline-block; margin-bottom: 0.8rem; letter-spacing: 1px;
+        }
+        .proj-header {
+            display: flex; justify-content: space-between;
+            align-items: flex-start; margin-bottom: 0.7rem;
+        }
+        .proj-name {
+            font-family: var(--font-hd); font-size: 0.85rem; font-weight: 700;
+            letter-spacing: 1px; color: var(--text);
+        }
+        .proj-ico { font-size: 1.5rem; }
+        .proj-desc {
+            font-size: 0.855rem; color: var(--text-muted);
+            line-height: 1.65; margin-bottom: 1.2rem; flex: 1;
+        }
+        .proj-tags { display: flex; flex-wrap: wrap; gap:.4rem; margin-bottom:1.2rem; }
+        .proj-links { display: flex; gap:.7rem; }
+        .proj-btn {
+            font-family: var(--font-mono); font-size: 0.72rem;
+            color: var(--cyan); border: 1px solid rgba(0,229,255,.3);
+            padding: 0.28rem 0.8rem; border-radius: 4px; transition: all 0.2s;
+            display: inline-flex; align-items: center; gap: 0.3rem;
+        }
+        .proj-btn:hover {
+            background: rgba(0,229,255,.08); border-color: var(--cyan);
+            box-shadow: 0 0 10px rgba(0,229,255,.3);
+        }
+        .proj-btn.private-btn {
+            color: var(--text-muted); border-color: var(--border); cursor: default;
+        }
+        .proj-btn.private-btn:hover {
+            background: transparent; border-color: var(--border); box-shadow: none;
+        }
+
+        /* ═══════════════════════════════════════
+           ACHIEVEMENTS
+        ═══════════════════════════════════════ */
+        .ach-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+            gap: 1.3rem;
+        }
+        .ach-card {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 10px; padding: 1.5rem;
+            display: flex; gap: 1rem; align-items: flex-start;
+            transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
+        }
+        .ach-card:hover {
+            border-color: rgba(0,229,255,.35);
+            box-shadow: 0 0 22px rgba(0,229,255,.10);
+            transform: translateY(-3px);
+        }
+        .ach-ico  { font-size: 2.2rem; flex-shrink:0; line-height:1; }
+        .ach-name {
+            font-family: var(--font-hd); font-size: 0.75rem; font-weight: 700;
+            letter-spacing: 1px; color: var(--text); margin-bottom: 0.25rem;
+        }
+        .ach-sub  { font-family: var(--font-mono); font-size: 0.72rem; color: var(--cyan); margin-bottom: 0.5rem; }
+        .ach-desc { font-size: 0.8rem; color: var(--text-muted); line-height: 1.55; }
+
+        /* ═══════════════════════════════════════
+           TICKER
+        ═══════════════════════════════════════ */
+        .ticker-wrap {
+            position: relative; z-index: 1; overflow: hidden;
+            border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+            padding: 0.65rem 0; background: rgba(120,0,200,.04);
+        }
+        .ticker { display: flex; white-space: nowrap; animation: ticker-move 35s linear infinite; }
+        .ticker-item { font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted); padding: 0 1.5rem; }
+        .ticker-sep { color: var(--purple); padding: 0 0.2rem; }
+        @keyframes ticker-move { 0%{transform:translateX(0);} 100%{transform:translateX(-50%);} }
+
+        /* ═══════════════════════════════════════
+           CONTACT
+        ═══════════════════════════════════════ */
+        .contact-sub {
+            font-family: var(--font-mono); font-size: 0.82rem;
+            color: var(--text-muted); margin-bottom: 2.5rem;
+        }
+        .contact-sub span { color: var(--purple); }
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.2rem;
+        }
+        .contact-card {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 10px; padding: 1.5rem; cursor: pointer;
+            transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
+            display: block;
+        }
+        .contact-card:hover {
+            border-color: rgba(184,0,255,.45);
+            box-shadow: 0 0 26px rgba(184,0,255,.15);
+            transform: translateY(-3px);
+        }
+        .cc-ico   { font-size:1.8rem; margin-bottom:.7rem; }
+        .cc-title { font-family: var(--font-hd); font-size: 0.7rem; font-weight:700; letter-spacing: 2px; color: var(--text); margin-bottom: 0.28rem; }
+        .cc-val   { font-family: var(--font-mono); font-size: 0.78rem; color: var(--purple); }
+        .cc-sub   { font-size:0.73rem; color:var(--text-muted); margin-top:.2rem; }
+
+        /* ═══════════════════════════════════════
+           FOOTER
+        ═══════════════════════════════════════ */
+        footer {
+            position: relative; z-index: 1;
+            border-top: 1px solid var(--border);
+            padding: 2rem 2.5rem;
+            display: flex; align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap; gap: 1rem;
+        }
+        .foot-left { font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted); }
+        .foot-left .fl-cmd { color: var(--purple); }
+        .foot-left .fl-str { color: #88aa66; }
+        .foot-icons { display: flex; gap: 1rem; }
+        .foot-icon {
+            font-size: 1.2rem; opacity: .5;
+            transition: opacity .2s, filter .2s;
+        }
+        .foot-icon:hover { opacity: 1; filter: drop-shadow(0 0 6px var(--purple)); }
+
+        /* ═══════════════════════════════════════
+           FADE-IN
+        ═══════════════════════════════════════ */
+        .fade-up {
+            opacity: 0; transform: translateY(28px);
+            transition: opacity .65s ease, transform .65s ease;
+        }
+        .fade-up.visible { opacity:1; transform:translateY(0); }
+
+        /* ═══════════════════════════════════════
+           RESPONSIVE
+        ═══════════════════════════════════════ */
+        @media (max-width: 820px) {
+            section { padding: 90px 1.2rem 60px; }
+            #navbar { padding: 0 1rem; }
+            .nav-brand { display: none; }
+            .nav-links {
+                display: none; flex-direction: column; position: absolute;
+                top: 58px; left: 0; right: 0;
+                background: rgba(4,0,10,.97); padding: 1rem 1.5rem;
+                border-bottom: 1px solid var(--border-glow); gap: .5rem;
+            }
+            .nav-links.open { display: flex; }
+            .nav-cv { display: none; }
+            .nav-toggle { display: flex; }
+            .hero-inner { flex-direction: column-reverse; align-items: flex-start; gap: 2rem; }
+            .hero-right { width:100%; display:flex; justify-content:center; }
+            .icon-wrap { width:200px; height:200px; }
+            .projects-grid, .skills-grid, .ach-grid, .contact-grid { grid-template-columns: 1fr; }
+            footer { flex-direction: column; align-items: flex-start; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="bg-aura"></div>
+<div class="bg-grid"></div>
+<div class="scanlines"></div>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+
+<!-- ════════════════════════════════════════
+     NAVBAR
+════════════════════════════════════════ -->
+<nav id="navbar">
+    <div class="nav-left">
+        <!-- Language toggle (like Rem0's) -->
+        <div class="lang-toggle" id="langToggle">
+            <span class="lang-btn active" id="btnEn">EN</span>
+            <span class="lang-sep">/</span>
+            <span class="lang-btn" id="btnEs">ES</span>
+        </div>
+        <div class="nav-brand">
+            <span class="nb-bracket">[</span>root@<span class="nb-host">S4MUR41Daemon</span><span class="nb-bracket">]</span>&nbsp;<span style="color:var(--text-muted)">~</span><span class="nb-bracket">#</span>
+        </div>
+    </div>
+    <button class="nav-toggle" id="navToggle" aria-label="Menu">
+        <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="navLinks">
+        <li><a href="#home"         class="active" data-i18n="nav-home">./home</a></li>
+        <li><a href="#about"        data-i18n="nav-about">./about</a></li>
+        <li><a href="#skills"       data-i18n="nav-skills">./skills</a></li>
+        <li><a href="#projects"     data-i18n="nav-projects">./projects</a></li>
+        <li><a href="#achievements" data-i18n="nav-achievements">./achievements</a></li>
+        <li><a href="#contact"      data-i18n="nav-contact">./contact</a></li>
+    </ul>
+    <a href="AssetsMios/David_Maicas_Valero_CV.pdf" download class="nav-cv" data-i18n="nav-cv">⬇ CV</a>
+</nav>
+
+<!-- ════════════════════════════════════════
+     HERO
+════════════════════════════════════════ -->
+<section id="home">
+    <div class="hero-inner">
+        <div class="hero-left">
+            <div class="hero-prompt">
+                <span class="hp-bracket">[</span><span class="hp-host">root</span><span class="hp-bracket">@</span><span class="hp-path">daemon</span>&nbsp;<span class="hp-path">~</span><span class="hp-bracket">]#</span>&nbsp;<span class="hp-cmd" id="typedCmd"></span><span class="cursor-blink"></span>
+            </div>
+            <h1 class="hero-name" data-text="S4MUR41DAEMON">S4MUR41DAEMON</h1>
+            <p class="hero-realname">// David Maicas Valero</p>
+            <p class="hero-subtitle">
+                <span class="hl-cyan">Full Stack Developer</span>
+                <span class="sep-bar">&nbsp;//&nbsp;</span>
+                <span class="hl-purple">Game Dev</span>
+                <span class="sep-bar">&nbsp;//&nbsp;</span>
+                <span class="hl-pink">Cloud &amp; AI</span>
+            </p>
+            <div class="hero-status">
+                <span class="status-avail" data-i18n="hero-avail">AVAILABLE</span>
+                <span data-i18n="hero-location">// Zaragoza, ES</span>
+                <span data-i18n="hero-stack">// Spring Boot · Angular · Python</span>
+            </div>
+            <div class="hero-btns">
+                <a href="#projects" class="btn btn-primary"  data-i18n="hero-btn-proj">&lt;/&gt;&nbsp;VIEW PROJECTS</a>
+                <a href="#contact"  class="btn btn-ghost"    data-i18n="hero-btn-contact">✉&nbsp;CONTACT</a>
+                <a href="AssetsMios/David_Maicas_Valero_CV.pdf" download class="btn btn-ghost-pink" data-i18n="hero-btn-cv">⬇&nbsp;CV</a>
+            </div>
+        </div>
+        <div class="hero-right">
+            <div class="icon-wrap">
+                <div class="icon-glow"></div>
+                <img src="AssetsMios/MyIcon.png" alt="S4MUR41Daemon avatar">
+                <div class="icon-tag">he/him · Zaragoza 🇪🇸</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<hr class="divider">
+
+<!-- ════════════════════════════════════════
+     ABOUT
+════════════════════════════════════════ -->
+<section id="about" class="fade-up">
+    <div class="section-title" data-i18n="title-about"><span class="t-dot">./</span>about_me<span class="t-slash">/</span></div>
+    <div class="term-win">
+        <div class="term-bar">
+            <span class="dot dot-red"></span>
+            <span class="dot dot-yel"></span>
+            <span class="dot dot-grn"></span>
+            <span class="term-path">S4MUR41Daemon@system:~/about</span>
+        </div>
+        <div class="term-body">
+            <div class="about-line" data-i18n="about-1"><span class="al-prompt">$</span> Junior Full Stack Developer with real hands-on experience. Currently interning as <span class="al-hl">Full Stack Developer at Nervia</span> (Spring Boot + Angular), building investment applications with Helm and CronJob scheduling.</div>
+            <div class="about-line" data-i18n="about-2"><span class="al-prompt">$</span> Cloud certified: <span class="al-hl">AWS Cloud Practitioner</span> and <span class="al-hl">Azure AZ-900</span>. <span class="al-hl">Cambridge C1 English</span>. Always looking toward the technological horizon and ready to work in international environments.</div>
+            <div class="about-line" data-i18n="about-3"><span class="al-prompt">$</span> Passionate about <span class="al-hl2">game development</span>: currently building a 2D Roguelike in <span class="al-hl">Godot 4</span> as my final degree project. Code is the tool — games are the ultimate goal.</div>
+            <div class="about-line" data-i18n="about-4"><span class="al-prompt">$</span> Award winner at <span class="al-hl2">The Wave Hackathon 2025</span> (ECODES) with the Greenstep project: a sustainable mobility app tracking carbon footprint with an eco-token reward system.</div>
+            <div class="about-line" data-i18n="about-5"><span class="al-prompt">$</span> Outside the keyboard: <span class="al-hl">gym &amp; sports</span>, classic fantasy fiction (Tolkien, Sanderson, Hobb...), <span class="al-hl">video games</span> in all their forms, and any technology worth taking apart.</div>
+        </div>
+    </div>
+</section>
+
+<hr class="divider">
+
+<!-- ════════════════════════════════════════
+     SKILLS
+════════════════════════════════════════ -->
+<section id="skills" class="fade-up">
+    <div class="section-title" data-i18n="title-skills"><span class="t-dot">./</span>skills<span class="t-slash">/</span></div>
+    <div class="skills-grid">
+        <div class="skill-card">
+            <div class="skill-icon">⚙️</div>
+            <div class="skill-label" data-i18n="skill-backend">Backend</div>
+            <div class="tags">
+                <span class="tag t-p">Java</span><span class="tag t-p">Spring Boot</span>
+                <span class="tag t-p">Python</span><span class="tag t-p">.NET / C#</span>
+                <span class="tag t-p">REST APIs</span><span class="tag t-p">Helm</span>
+                <span class="tag t-p">CronJobs</span>
+            </div>
+        </div>
+        <div class="skill-card">
+            <div class="skill-icon">🖥️</div>
+            <div class="skill-label" data-i18n="skill-frontend">Frontend</div>
+            <div class="tags">
+                <span class="tag t-c">Angular</span><span class="tag t-c">Next.js</span>
+                <span class="tag t-c">TypeScript</span><span class="tag t-c">JavaScript</span>
+                <span class="tag t-c">HTML5</span><span class="tag t-c">CSS3</span>
+            </div>
+        </div>
+        <div class="skill-card">
+            <div class="skill-icon">☁️</div>
+            <div class="skill-label" data-i18n="skill-cloud">Cloud &amp; DB</div>
+            <div class="tags">
+                <span class="tag t-y">AWS (CCP)</span><span class="tag t-y">Azure AZ-900</span>
+                <span class="tag t-y">MySQL</span><span class="tag t-y">MongoDB</span>
+                <span class="tag t-y">Docker</span>
+            </div>
+        </div>
+        <div class="skill-card">
+            <div class="skill-icon">🎮</div>
+            <div class="skill-label" data-i18n="skill-gamedev">Game Dev &amp; Tools</div>
+            <div class="tags">
+                <span class="tag t-k">Godot 4</span><span class="tag t-k">GDScript</span>
+                <span class="tag t-k">2D Design</span><span class="tag t-k">Git</span>
+                <span class="tag t-k">GitHub</span><span class="tag t-k">Kali Linux</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<hr class="divider">
+
+<!-- ════════════════════════════════════════
+     PROJECTS
+════════════════════════════════════════ -->
+<section id="projects" class="fade-up">
+    <div class="projects-header">
+        <div class="section-title" data-i18n="title-projects"><span class="t-dot">./</span>projects<span class="t-slash">/</span></div>
+        <a href="https://github.com/S4MUR41Daemon" target="_blank" class="gh-link" data-i18n="gh-link">🐙 View all on GitHub →</a>
+    </div>
+    <div class="projects-grid">
+
+        <div class="proj-card">
+            <span class="proj-feat" data-i18n="feat-1">★ FEATURED</span>
+            <div class="proj-header"><span class="proj-name">BLOCKCHAIN</span><span class="proj-ico">⛓️</span></div>
+            <p class="proj-desc" data-i18n="proj-desc-blockchain">Blockchain system implemented from scratch in Java. Supports transactions, chain validation, and a Mempool for managing pending transactions. Includes a proof-of-work mining algorithm.</p>
+            <div class="proj-tags">
+                <span class="tag t-p">Java</span><span class="tag t-c">Blockchain</span><span class="tag t-k">Cryptography</span>
+            </div>
+            <div class="proj-links">
+                <a href="https://github.com/S4MUR41Daemon/Blockchain" target="_blank" class="proj-btn">⌥ GitHub</a>
+            </div>
+        </div>
+
+        <div class="proj-card">
+            <span class="proj-feat" data-i18n="feat-2">★ FEATURED</span>
+            <div class="proj-header"><span class="proj-name">AI_AGENT</span><span class="proj-ico">🤖</span></div>
+            <p class="proj-desc" data-i18n="proj-desc-ai">Artificial Intelligence agent with an internal toolset. Capable of reasoning, executing complex tasks, and chaining actions to autonomously automate workflows.</p>
+            <div class="proj-tags">
+                <span class="tag t-p">Python</span><span class="tag t-c">AI / LLM</span><span class="tag t-k">Automation</span>
+            </div>
+            <div class="proj-links">
+                <a href="https://github.com/S4MUR41Daemon/AI_Agent" target="_blank" class="proj-btn">⌥ GitHub</a>
+            </div>
+        </div>
+
+        <div class="proj-card">
+            <span class="proj-feat" data-i18n="feat-3">★ FEATURED · THESIS</span>
+            <div class="proj-header"><span class="proj-name">TFG-ROGUELIKE</span><span class="proj-ico">🗡️</span></div>
+            <p class="proj-desc" data-i18n="proj-desc-roguelike">2D Roguelike video game developed in Godot 4 as my final degree project. Features procedural dungeon generation, combat system, character progression and classic roguelike mechanics.</p>
+            <div class="proj-tags">
+                <span class="tag t-k">Godot 4</span><span class="tag t-k">GDScript</span>
+                <span class="tag t-c">2D Game Dev</span><span class="tag t-y">Procedural</span>
+            </div>
+            <div class="proj-links">
+                <span class="proj-btn private-btn" data-i18n="proj-private">🔒 PRIVATE</span>
+            </div>
+        </div>
+
+        <div class="proj-card">
+            <span class="proj-feat" data-i18n="feat-4">★ FEATURED</span>
+            <div class="proj-header"><span class="proj-name">OPDECKMANAGER</span><span class="proj-ico">🃏</span></div>
+            <p class="proj-desc" data-i18n="proj-desc-opdeck">One Piece TCG deck manager. Robust Spring Boot backend with an Angular frontend. Create, edit, manage and import decks from the collectible card game.</p>
+            <div class="proj-tags">
+                <span class="tag t-p">Java</span><span class="tag t-p">Spring Boot</span><span class="tag t-c">Angular</span>
+            </div>
+            <div class="proj-links">
+                <a href="https://github.com/S4MUR41Daemon/OPDeckManager" target="_blank" class="proj-btn">⌥ GitHub</a>
+            </div>
+        </div>
+
+        <div class="proj-card">
+            <div class="proj-header"><span class="proj-name">PORT-SCANNER</span><span class="proj-ico">🔍</span></div>
+            <p class="proj-desc" data-i18n="proj-desc-portscanner">Port scanner designed for Kali Linux environments. Uses threading to scan multiple ports in parallel with support for custom ranges and report generation.</p>
+            <div class="proj-tags">
+                <span class="tag t-p">Python</span><span class="tag t-k">Security</span>
+                <span class="tag t-c">Kali Linux</span><span class="tag t-y">Threading</span>
+            </div>
+            <div class="proj-links">
+                <a href="https://github.com/S4MUR41Daemon/Port-Scanner" target="_blank" class="proj-btn">⌥ GitHub</a>
+            </div>
+        </div>
+
+        <div class="proj-card">
+            <div class="proj-header"><span class="proj-name">COINSEEKER</span><span class="proj-ico">💰</span></div>
+            <p class="proj-desc" data-i18n="proj-desc-coinseeker">Web application for real-time cryptocurrency tracking. Built with JavaScript, consuming external APIs to display prices, trend charts and market data.</p>
+            <div class="proj-tags">
+                <span class="tag t-c">JavaScript</span><span class="tag t-y">APIs</span><span class="tag t-c">Web</span>
+            </div>
+            <div class="proj-links">
+                <a href="https://github.com/S4MUR41Daemon/CoinSeeker" target="_blank" class="proj-btn">⌥ GitHub</a>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<hr class="divider">
+
+<!-- ════════════════════════════════════════
+     ACHIEVEMENTS
+════════════════════════════════════════ -->
+<section id="achievements" class="fade-up">
+    <div class="section-title" data-i18n="title-achievements"><span class="t-dot">./</span>achievements<span class="t-slash">/</span></div>
+    <div class="ach-grid">
+
+        <div class="ach-card">
+            <span class="ach-ico">🏆</span>
+            <div>
+                <div class="ach-name" data-i18n="ach-name-hackathon">THE WAVE HACKATHON 2025</div>
+                <div class="ach-sub" data-i18n="ach-sub-hackathon">ECODES · Project: Greenstep</div>
+                <div class="ach-desc" data-i18n="ach-desc-hackathon">Sustainable mobility app tracking carbon footprint with eco-tokens to reward eco-friendly transport. Award granted at the event.</div>
+            </div>
+        </div>
+
+        <div class="ach-card">
+            <span class="ach-ico">💼</span>
+            <div>
+                <div class="ach-name" data-i18n="ach-name-nervia">FULL STACK INTERN · NERVIA</div>
+                <div class="ach-sub" data-i18n="ach-sub-nervia">Mar 2025 – Present · Zaragoza</div>
+                <div class="ach-desc" data-i18n="ach-desc-nervia">Full stack development in a real corporate environment using Spring Boot and Angular. Helm configuration, CronJob scheduling and investment management applications.</div>
+            </div>
+        </div>
+
+        <div class="ach-card">
+            <span class="ach-ico">☁️</span>
+            <div>
+                <div class="ach-name">AWS CLOUD PRACTITIONER</div>
+                <div class="ach-sub">Amazon Web Services · Jul 2025</div>
+                <div class="ach-desc" data-i18n="ach-desc-aws">Official AWS cloud computing fundamentals certification: architecture, core services, security, and the shared responsibility model.</div>
+            </div>
+        </div>
+
+        <div class="ach-card">
+            <span class="ach-ico">🔷</span>
+            <div>
+                <div class="ach-name">AZURE FUNDAMENTALS AZ-900</div>
+                <div class="ach-sub" data-i18n="ach-sub-azure">Microsoft · Dec 2025</div>
+                <div class="ach-desc" data-i18n="ach-desc-azure">Certification in Azure fundamental concepts: cloud services, security, privacy, compliance and pricing models.</div>
+            </div>
+        </div>
+
+        <div class="ach-card">
+            <span class="ach-ico">🎮</span>
+            <div>
+                <div class="ach-name" data-i18n="ach-name-godot">MASTER GODOT 4 · 24h</div>
+                <div class="ach-sub" data-i18n="ach-sub-godot">Udemy · Mar 2026 · 24h</div>
+                <div class="ach-desc" data-i18n="ach-desc-godot">Complete 2D game development course with Godot 4 and GDScript. Game mechanics, 2D physics, animation and publishing pipeline.</div>
+            </div>
+        </div>
+
+        <div class="ach-card">
+            <span class="ach-ico">🇬🇧</span>
+            <div>
+                <div class="ach-name">C1 ADVANCED ENGLISH</div>
+                <div class="ach-sub" data-i18n="ach-sub-cambridge">University of Cambridge · Apr 2022</div>
+                <div class="ach-desc" data-i18n="ach-desc-cambridge">Advanced English certificate from the University of Cambridge. Fluent professional communication in international environments.</div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+    <div class="ticker">
+        <span class="ticker-item">JAVA</span><span class="ticker-sep">▸</span>
+        <span class="ticker-item">SPRING BOOT</span><span class="ticker-sep">▸</span>
+        <span class="ticker-item">ANGULAR</span><span class="ticker-sep">▸</span>
+        <span class="ticker-item">PYTHON</span><span class="ticker-sep">▸</span>
+        <span class="ticker-item">GODOT 4</span><span class="ticker-sep">▸</span>
+        <span class="ticker-item">BLOCKCHAIN</span><span class="ticker-sep">▸</span>
+        <span class="ticker-item">AWS</span><span class="ticker-sep">▸</span>
+        <span class="ticker-item">AZURE</span><span class="ticker-sep">▸</span>
+        <span class="ticker-item">DOCKER</span><span class="ticker-sep">▸</span>
+        <span class="ticker-item">AI AGENT</span><span class="ticker-sep">▸</span>
+        <span class="ticker-item">ROGUELIKE</span><span class="ticker-sep">▸</span>
+        <span class="ticker-item">NEXT.JS</span><span class="ticker-sep">▸</span>
+        <span class="ticker-item">MYSQL</span><span class="ticker-sep">▸</span>
+        <span class="ticker-item">C# / .NET</span><span class="ticker-sep">▸</span>
+        <span class="ticker-item">KALI LINUX</span><span class="ticker-sep">▸</span>
+        <span class="ticker-item">GDSCRIPT</span><span class="ticker-sep">▸</span>
+        <!-- Duplicate for seamless loop -->
+        <span class="ticker-item">JAVA</span><span class="ticker-sep">▸</span>
+        <span class="ticker-item">SPRING BOOT</span><span class="ticker-sep">▸</span>
+        <span class="ticker-item">ANGULAR</span><span class="ticker-sep">▸</span>
+        <span class="ticker-item">PYTHON</span><span class="ticker-sep">▸</span>
+        <span class="ticker-item">GODOT 4</span><span class="ticker-sep">▸</span>
+        <span class="ticker-item">BLOCKCHAIN</span><span class="ticker-sep">▸</span>
+        <span class="ticker-item">AWS</span><span class="ticker-sep">▸</span>
+        <span class="ticker-item">AZURE</span><span class="ticker-sep">▸</span>
+        <span class="ticker-item">DOCKER</span><span class="ticker-sep">▸</span>
+        <span class="ticker-item">AI AGENT</span><span class="ticker-sep">▸</span>
+        <span class="ticker-item">ROGUELIKE</span><span class="ticker-sep">▸</span>
+        <span class="ticker-item">NEXT.JS</span><span class="ticker-sep">▸</span>
+        <span class="ticker-item">MYSQL</span><span class="ticker-sep">▸</span>
+        <span class="ticker-item">C# / .NET</span><span class="ticker-sep">▸</span>
+        <span class="ticker-item">KALI LINUX</span><span class="ticker-sep">▸</span>
+        <span class="ticker-item">GDSCRIPT</span><span class="ticker-sep">▸</span>
+    </div>
+</div>
+
+<hr class="divider">
+
+<!-- ════════════════════════════════════════
+     CONTACT
+════════════════════════════════════════ -->
+<section id="contact" class="fade-up">
+    <div class="section-title" data-i18n="title-contact"><span class="t-dot">./</span>contact<span class="t-slash">/</span></div>
+    <p class="contact-sub" data-i18n="contact-sub"><span>// </span>Have a project in mind? Always open to new opportunities and collaborations.</p>
+    <div class="contact-grid">
+        <a href="https://github.com/S4MUR41Daemon" target="_blank" class="contact-card">
+            <div class="cc-ico">🐙</div>
+            <div class="cc-title">GITHUB</div>
+            <div class="cc-val">S4MUR41Daemon</div>
+            <div class="cc-sub" data-i18n="cc-sub-github">Source code and projects</div>
+        </a>
+        <a href="https://linkedin.com/in/david-maicas-valero-11b882306" target="_blank" class="contact-card">
+            <div class="cc-ico">🔗</div>
+            <div class="cc-title">LINKEDIN</div>
+            <div class="cc-val">David Maicas Valero</div>
+            <div class="cc-sub" data-i18n="cc-sub-linkedin">Professional network</div>
+        </a>
+        <div class="contact-card">
+            <div class="cc-ico">📍</div>
+            <div class="cc-title" data-i18n="cc-title-location">LOCATION</div>
+            <div class="cc-val" data-i18n="cc-val-location">Zaragoza, Spain</div>
+            <div class="cc-sub" data-i18n="cc-sub-location">Available remotely</div>
+        </div>
+        <a href="AssetsMios/David_Maicas_Valero_CV.pdf" download class="contact-card">
+            <div class="cc-ico">📄</div>
+            <div class="cc-title" data-i18n="cc-title-cv">RESUME</div>
+            <div class="cc-val" data-i18n="cc-val-cv">Download CV</div>
+            <div class="cc-sub" data-i18n="cc-sub-cv">Updated version · PDF</div>
+        </a>
+    </div>
+</section>
+
+<!-- ════════════════════════════════════════
+     FOOTER
+════════════════════════════════════════ -->
+<footer>
+    <div class="foot-left">
+        <span class="fl-cmd">echo</span> <span class="fl-str" data-i18n="footer-text">"© 2025 David Maicas Valero · Built by hand with HTML, CSS &amp; JS · No frameworks, pure craftsmanship"</span>
+    </div>
+    <div class="foot-icons">
+        <a href="https://github.com/S4MUR41Daemon" target="_blank" class="foot-icon" title="GitHub">🐙</a>
+        <a href="https://linkedin.com/in/david-maicas-valero-11b882306" target="_blank" class="foot-icon" title="LinkedIn">🔗</a>
+    </div>
+</footer>
+
+<!-- ════════════════════════════════════════
+     JAVASCRIPT
+════════════════════════════════════════ -->
+<script>
+    /* ══════════════════════════════════════
+       TRANSLATIONS
+    ══════════════════════════════════════ */
+    const T = {
+        en: {
+            'nav-home':         './home',
+            'nav-about':        './about',
+            'nav-skills':       './skills',
+            'nav-projects':     './projects',
+            'nav-achievements': './achievements',
+            'nav-contact':      './contact',
+            'nav-cv':           '⬇ CV',
+            'hero-avail':       'AVAILABLE',
+            'hero-location':    '// Zaragoza, ES',
+            'hero-stack':       '// Spring Boot · Angular · Python',
+            'hero-btn-proj':    '&lt;/&gt;&nbsp;VIEW PROJECTS',
+            'hero-btn-contact': '✉&nbsp;CONTACT',
+            'hero-btn-cv':      '⬇&nbsp;CV',
+            'title-about':      '<span class="t-dot">./</span>about_me<span class="t-slash">/</span>',
+            'title-skills':     '<span class="t-dot">./</span>skills<span class="t-slash">/</span>',
+            'title-projects':   '<span class="t-dot">./</span>projects<span class="t-slash">/</span>',
+            'title-achievements':'<span class="t-dot">./</span>achievements<span class="t-slash">/</span>',
+            'title-contact':    '<span class="t-dot">./</span>contact<span class="t-slash">/</span>',
+            'about-1': '<span class="al-prompt">$</span> Junior Full Stack Developer with real hands-on experience. Currently interning as <span class="al-hl">Full Stack Developer at Nervia</span> (Spring Boot + Angular), building investment applications with Helm and CronJob scheduling.',
+            'about-2': '<span class="al-prompt">$</span> Cloud certified: <span class="al-hl">AWS Cloud Practitioner</span> and <span class="al-hl">Azure AZ-900</span>. <span class="al-hl">Cambridge C1 English</span>. Always looking toward the technological horizon and ready to work in international environments.',
+            'about-3': '<span class="al-prompt">$</span> Passionate about <span class="al-hl2">game development</span>: currently building a 2D Roguelike in <span class="al-hl">Godot 4</span> as my final degree project. Code is the tool — games are the ultimate goal.',
+            'about-4': '<span class="al-prompt">$</span> Award winner at <span class="al-hl2">The Wave Hackathon 2025</span> (ECODES) with the Greenstep project: a sustainable mobility app tracking carbon footprint with an eco-token reward system.',
+            'about-5': '<span class="al-prompt">$</span> Outside the keyboard: <span class="al-hl">gym &amp; sports</span>, classic fantasy fiction (Tolkien, Sanderson, Hobb...), <span class="al-hl">video games</span> in all their forms, and any technology worth taking apart.',
+            'skill-backend':  'Backend',
+            'skill-frontend': 'Frontend',
+            'skill-cloud':    'Cloud &amp; DB',
+            'skill-gamedev':  'Game Dev &amp; Tools',
+            'gh-link':         '🐙 View all on GitHub →',
+            'feat-1':          '★ FEATURED',
+            'feat-2':          '★ FEATURED',
+            'feat-3':          '★ FEATURED · THESIS',
+            'feat-4':          '★ FEATURED',
+            'proj-desc-blockchain':  'Blockchain system implemented from scratch in Java. Supports transactions, chain validation, and a Mempool for managing pending transactions. Includes a proof-of-work mining algorithm.',
+            'proj-desc-ai':          'Artificial Intelligence agent with an internal toolset. Capable of reasoning, executing complex tasks, and chaining actions to autonomously automate workflows.',
+            'proj-desc-roguelike':   '2D Roguelike video game developed in Godot 4 as my final degree project. Features procedural dungeon generation, combat system, character progression and classic roguelike mechanics.',
+            'proj-desc-opdeck':      'One Piece TCG deck manager. Robust Spring Boot backend with an Angular frontend. Create, edit, manage and import decks from the collectible card game.',
+            'proj-desc-portscanner': 'Port scanner designed for Kali Linux environments. Uses threading to scan multiple ports in parallel with support for custom ranges and report generation.',
+            'proj-desc-coinseeker':  'Web application for real-time cryptocurrency tracking. Built with JavaScript, consuming external APIs to display prices, trend charts and market data.',
+            'proj-private':          '🔒 PRIVATE',
+            'ach-name-hackathon':    'THE WAVE HACKATHON 2025',
+            'ach-sub-hackathon':     'ECODES · Project: Greenstep',
+            'ach-desc-hackathon':    'Sustainable mobility app tracking carbon footprint with eco-tokens to reward eco-friendly transport. Award granted at the event.',
+            'ach-name-nervia':       'FULL STACK INTERN · NERVIA',
+            'ach-sub-nervia':        'Mar 2025 – Present · Zaragoza',
+            'ach-desc-nervia':       'Full stack development in a real corporate environment using Spring Boot and Angular. Helm configuration, CronJob scheduling and investment management applications.',
+            'ach-desc-aws':          'Official AWS cloud computing fundamentals certification: architecture, core services, security, and the shared responsibility model.',
+            'ach-sub-azure':         'Microsoft · Dec 2025',
+            'ach-desc-azure':        'Certification in Azure fundamental concepts: cloud services, security, privacy, compliance and pricing models.',
+            'ach-name-godot':        'MASTER GODOT 4 · 24h',
+            'ach-sub-godot':         'Udemy · Mar 2026 · 24h',
+            'ach-desc-godot':        'Complete 2D game development course with Godot 4 and GDScript. Game mechanics, 2D physics, animation and publishing pipeline.',
+            'ach-sub-cambridge':     'University of Cambridge · Apr 2022',
+            'ach-desc-cambridge':    'Advanced English certificate from the University of Cambridge. Fluent professional communication in international environments.',
+            'contact-sub':           '<span>// </span>Have a project in mind? Always open to new opportunities and collaborations.',
+            'cc-sub-github':         'Source code and projects',
+            'cc-sub-linkedin':       'Professional network',
+            'cc-title-location':     'LOCATION',
+            'cc-val-location':       'Zaragoza, Spain',
+            'cc-sub-location':       'Available remotely',
+            'cc-title-cv':           'RESUME',
+            'cc-val-cv':             'Download CV',
+            'cc-sub-cv':             'Updated version · PDF',
+            'footer-text':           '"© 2025 David Maicas Valero · Built by hand with HTML, CSS &amp; JS · No frameworks, pure craftsmanship"',
+        },
+        es: {
+            'nav-home':         './inicio',
+            'nav-about':        './about',
+            'nav-skills':       './skills',
+            'nav-projects':     './proyectos',
+            'nav-achievements': './logros',
+            'nav-contact':      './contact',
+            'nav-cv':           '⬇ CV',
+            'hero-avail':       'DISPONIBLE',
+            'hero-location':    '// Zaragoza, ES',
+            'hero-stack':       '// Spring Boot · Angular · Python',
+            'hero-btn-proj':    '&lt;/&gt;&nbsp;VER PROYECTOS',
+            'hero-btn-contact': '✉&nbsp;CONTACTAR',
+            'hero-btn-cv':      '⬇&nbsp;CV',
+            'title-about':      '<span class="t-dot">./</span>sobre_mí<span class="t-slash">/</span>',
+            'title-skills':     '<span class="t-dot">./</span>habilidades<span class="t-slash">/</span>',
+            'title-projects':   '<span class="t-dot">./</span>proyectos<span class="t-slash">/</span>',
+            'title-achievements':'<span class="t-dot">./</span>logros<span class="t-slash">/</span>',
+            'title-contact':    '<span class="t-dot">./</span>contacto<span class="t-slash">/</span>',
+            'about-1': '<span class="al-prompt">$</span> Junior Full Stack Developer con experiencia real en entorno empresarial. Actualmente en prácticas como <span class="al-hl">Full Stack Developer en Nervia</span> (Spring Boot + Angular), desarrollando aplicaciones de inversión con Helm y CronJobs.',
+            'about-2': '<span class="al-prompt">$</span> Certificado en cloud: <span class="al-hl">AWS Cloud Practitioner</span> y <span class="al-hl">Azure AZ-900</span>. Inglés <span class="al-hl">C1 Cambridge</span>. Siempre con la mente en el horizonte tecnológico y dispuesto a trabajar en entornos internacionales.',
+            'about-3': '<span class="al-prompt">$</span> Apasionado del <span class="al-hl2">desarrollo de videojuegos</span>: actualmente construyendo un Roguelike 2D en <span class="al-hl">Godot 4</span> como TFG. El código es la herramienta, los juegos son el objetivo final.',
+            'about-4': '<span class="al-prompt">$</span> Ganador en el <span class="al-hl2">Hackathon The Wave 2025</span> (ECODES) con el proyecto Greenstep: app de movilidad sostenible con seguimiento de huella de carbono y sistema de eco-tokens.',
+            'about-5': '<span class="al-prompt">$</span> Fuera del teclado: <span class="al-hl">gimnasio &amp; deporte</span>, fantasía clásica (Tolkien, Sanderson, Hobb...), <span class="al-hl">videojuegos</span> en toda su dimensión y cualquier tecnología que valga la pena desmontar.',
+            'skill-backend':  'Backend',
+            'skill-frontend': 'Frontend',
+            'skill-cloud':    'Cloud &amp; DB',
+            'skill-gamedev':  'Game Dev &amp; Tools',
+            'gh-link':         '🐙 Ver todos en GitHub →',
+            'feat-1':          '★ DESTACADO',
+            'feat-2':          '★ DESTACADO',
+            'feat-3':          '★ DESTACADO · TFG',
+            'feat-4':          '★ DESTACADO',
+            'proj-desc-blockchain':  'Sistema de Blockchain implementado desde cero en Java. Soporta transacciones, validación de cadena de bloques y una Mempool para gestión de transacciones pendientes. Incluye algoritmo de minado con prueba de trabajo.',
+            'proj-desc-ai':          'Agente de Inteligencia Artificial con sistema de herramientas internas. Capaz de razonar, ejecutar tareas complejas y encadenar acciones para automatizar flujos de trabajo de forma autónoma.',
+            'proj-desc-roguelike':   'Videojuego Roguelike 2D desarrollado con Godot 4 como Trabajo de Fin de Grado. Generación procedural de mazmorras, sistema de combate, progresión de personaje y mecánicas roguelike clásicas.',
+            'proj-desc-opdeck':      'Gestor de mazos del TCG One Piece. Backend robusto con Spring Boot y frontend en Angular. Permite crear, editar, gestionar e importar mazos del juego de cartas coleccionables.',
+            'proj-desc-portscanner': 'Escáner de puertos diseñado para entornos Kali Linux. Usa threading para escanear múltiples puertos en paralelo con soporte para rangos personalizados y generación de reportes.',
+            'proj-desc-coinseeker':  'Aplicación web para seguimiento de criptomonedas en tiempo real. Desarrollada con JavaScript, consume APIs externas para mostrar precios, gráficas de tendencias y datos de mercado.',
+            'proj-private':          '🔒 PRIVADO',
+            'ach-name-hackathon':    'THE WAVE HACKATHON 2025',
+            'ach-sub-hackathon':     'ECODES · Proyecto: Greenstep',
+            'ach-desc-hackathon':    'App de movilidad sostenible con seguimiento de huella de carbono y eco-tokens para recompensar el transporte ecológico. Premio concedido en el evento.',
+            'ach-name-nervia':       'FULL STACK INTERN · NERVIA',
+            'ach-sub-nervia':        'Mar 2025 – Presente · Zaragoza',
+            'ach-desc-nervia':       'Desarrollo full stack en entorno empresarial real con Spring Boot y Angular. Configuración de Helm, CronJob scheduling y apps de gestión de inversiones.',
+            'ach-desc-aws':          'Certificación oficial en fundamentos de cloud computing AWS: arquitectura, servicios core, seguridad y modelo de responsabilidad compartida.',
+            'ach-sub-azure':         'Microsoft · Dic 2025',
+            'ach-desc-azure':        'Certificación en conceptos fundamentales de la plataforma Azure: servicios cloud, seguridad, privacidad, cumplimiento y modelos de precios.',
+            'ach-name-godot':        'MASTER GODOT 4 · 24h',
+            'ach-sub-godot':         'Udemy · Mar 2026 · 24h',
+            'ach-desc-godot':        'Curso completo de desarrollo de videojuegos 2D con Godot 4 y GDScript. Mecánicas de juego, física 2D, animación y flujo de publicación.',
+            'ach-sub-cambridge':     'Universidad de Cambridge · Abr 2022',
+            'ach-desc-cambridge':    'Certificado de nivel avanzado en inglés por la Universidad de Cambridge. Comunicación profesional fluida en entornos internacionales.',
+            'contact-sub':           '<span>// </span>¿Tienes un proyecto en mente? Siempre abierto a nuevas oportunidades y colaboraciones.',
+            'cc-sub-github':         'Código fuente y proyectos',
+            'cc-sub-linkedin':       'Red profesional',
+            'cc-title-location':     'UBICACIÓN',
+            'cc-val-location':       'Zaragoza, España',
+            'cc-sub-location':       'Disponible en remoto',
+            'cc-title-cv':           'CURRICULUM',
+            'cc-val-cv':             'Descargar CV',
+            'cc-sub-cv':             'Versión actualizada · PDF',
+            'footer-text':           '"© 2025 David Maicas Valero · Construido a mano con HTML, CSS &amp; JS · No frameworks, puro craftsmanship"',
+        }
+    };
+
+    /* ── Apply language ── */
+    let currentLang = 'en';
+
+    function setLang(lang) {
+        currentLang = lang;
+        document.documentElement.lang = lang;
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.dataset.i18n;
+            if (T[lang][key] !== undefined) el.innerHTML = T[lang][key];
+        });
+        document.getElementById('btnEn').classList.toggle('active', lang === 'en');
+        document.getElementById('btnEs').classList.toggle('active', lang === 'es');
+    }
+
+    document.getElementById('btnEn').addEventListener('click', () => setLang('en'));
+    document.getElementById('btnEs').addEventListener('click', () => setLang('es'));
+
+    /* Apply default language (EN) on load */
+    setLang('en');
+
+    /* ── Typewriter effect ── */
+    const cmdEl   = document.getElementById('typedCmd');
+    const cmdText = 'whoami';
+    let ti = 0;
+    const tw = setInterval(() => {
+        if (ti < cmdText.length) { cmdEl.textContent += cmdText[ti++]; }
+        else { clearInterval(tw); }
+    }, 110);
+
+    /* ── Active nav link on scroll ── */
+    const sections   = document.querySelectorAll('section[id]');
+    const navAnchors = document.querySelectorAll('.nav-links a');
+
+    function updateNav() {
+        let current = '';
+        sections.forEach(sec => {
+            if (window.scrollY >= sec.offsetTop - 80) current = sec.id;
+        });
+        navAnchors.forEach(a => {
+            a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+        });
+    }
+    window.addEventListener('scroll', updateNav, { passive: true });
+
+    /* ── Fade-up on scroll ── */
+    const io = new IntersectionObserver(
+        entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }),
+        { threshold: 0.08 }
+    );
+    document.querySelectorAll('.fade-up').forEach(el => io.observe(el));
+
+    /* ── Mobile nav toggle ── */
+    const navToggle = document.getElementById('navToggle');
+    const navLinks  = document.getElementById('navLinks');
+    navToggle.addEventListener('click', () => navLinks.classList.toggle('open'));
+    navAnchors.forEach(a => a.addEventListener('click', () => navLinks.classList.remove('open')));
+
+    /* ── Navbar opacity on scroll ── */
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+        navbar.style.background = window.scrollY > 30
+            ? 'rgba(4,0,10,0.96)'
+            : 'rgba(4,0,10,0.88)';
+    }, { passive: true });
+</script>
+</body>
+</html>
