@@ -499,7 +499,14 @@
             transform: translateY(-4px);
         }
         .skill-card:hover::after { transform: scaleX(1); }
-        .skill-icon  { font-size: 2rem; margin-bottom: 0.9rem; }
+        .skill-icon {
+            font-family: var(--font-mono);
+            font-size: 1.5rem;
+            color: var(--cyan);
+            margin-bottom: 0.9rem;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(0,229,255,0.5);
+        }
         .skill-label {
             font-family: var(--font-hd); font-size: 0.65rem; font-weight: 700;
             letter-spacing: 3px; text-transform: uppercase;
@@ -573,7 +580,14 @@
             font-family: var(--font-hd); font-size: 0.85rem; font-weight: 700;
             letter-spacing: 1px; color: var(--text);
         }
-        .proj-ico { font-size: 1.5rem; }
+        .proj-ico {
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            color: var(--purple);
+            letter-spacing: 1px;
+            text-shadow: 0 0 8px rgba(184,0,255,0.5);
+            flex-shrink: 0;
+        }
         .proj-desc {
             font-size: 0.855rem; color: var(--text-muted);
             line-height: 1.65; margin-bottom: 1.2rem; flex: 1;
@@ -616,7 +630,18 @@
             box-shadow: 0 0 22px rgba(0,229,255,.10);
             transform: translateY(-3px);
         }
-        .ach-ico  { font-size: 2.2rem; flex-shrink:0; line-height:1; }
+        .ach-ico {
+            font-family: var(--font-mono);
+            font-size: 1.1rem;
+            color: var(--cyan);
+            flex-shrink: 0;
+            line-height: 1;
+            min-width: 3.5rem;
+            text-align: center;
+            letter-spacing: 1px;
+            text-shadow: 0 0 8px rgba(0,229,255,0.4);
+            padding-top: 2px;
+        }
         .ach-name {
             font-family: var(--font-hd); font-size: 0.75rem; font-weight: 700;
             letter-spacing: 1px; color: var(--text); margin-bottom: 0.25rem;
@@ -661,7 +686,14 @@
             box-shadow: 0 0 26px rgba(184,0,255,.15);
             transform: translateY(-3px);
         }
-        .cc-ico   { font-size:1.8rem; margin-bottom:.7rem; }
+        .cc-ico {
+            font-family: var(--font-mono);
+            font-size: 1rem;
+            color: var(--purple);
+            margin-bottom: .7rem;
+            letter-spacing: 1px;
+            text-shadow: 0 0 8px rgba(184,0,255,0.4);
+        }
         .cc-title { font-family: var(--font-hd); font-size: 0.7rem; font-weight:700; letter-spacing: 2px; color: var(--text); margin-bottom: 0.28rem; }
         .cc-val   { font-family: var(--font-mono); font-size: 0.78rem; color: var(--purple); }
         .cc-sub   { font-size:0.73rem; color:var(--text-muted); margin-top:.2rem; }
@@ -682,10 +714,18 @@
         .foot-left .fl-str { color: #88aa66; }
         .foot-icons { display: flex; gap: 1rem; }
         .foot-icon {
-            font-size: 1.2rem; opacity: .5;
-            transition: opacity .2s, filter .2s;
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            opacity: .7;
+            transition: opacity .2s, color .2s, text-shadow .2s;
         }
-        .foot-icon:hover { opacity: 1; filter: drop-shadow(0 0 6px var(--purple)); }
+        .foot-icon:hover {
+            opacity: 1;
+            color: var(--purple);
+            text-shadow: 0 0 8px var(--purple);
+        }
 
         /* ═══════════════════════════════════════
            FADE-IN
@@ -830,7 +870,7 @@
     <div class="section-title" data-i18n="title-skills"><span class="t-dot">./</span>skills<span class="t-slash">/</span></div>
     <div class="skills-grid">
         <div class="skill-card">
-            <div class="skill-icon">⚙️</div>
+            <div class="skill-icon">{::}</div>
             <div class="skill-label" data-i18n="skill-backend">Backend</div>
             <div class="tags">
                 <span class="tag t-p">Java</span><span class="tag t-p">Spring Boot</span>
@@ -840,7 +880,7 @@
             </div>
         </div>
         <div class="skill-card">
-            <div class="skill-icon">🖥️</div>
+            <div class="skill-icon">&gt;_</div>
             <div class="skill-label" data-i18n="skill-frontend">Frontend</div>
             <div class="tags">
                 <span class="tag t-c">Angular</span><span class="tag t-c">Next.js</span>
@@ -849,7 +889,7 @@
             </div>
         </div>
         <div class="skill-card">
-            <div class="skill-icon">☁️</div>
+            <div class="skill-icon">/^\</div>
             <div class="skill-label" data-i18n="skill-cloud">Cloud &amp; DB</div>
             <div class="tags">
                 <span class="tag t-y">AWS (CCP)</span><span class="tag t-y">Azure AZ-900</span>
@@ -858,7 +898,7 @@
             </div>
         </div>
         <div class="skill-card">
-            <div class="skill-icon">🎮</div>
+            <div class="skill-icon">[&gt;]</div>
             <div class="skill-label" data-i18n="skill-gamedev">Game Dev &amp; Tools</div>
             <div class="tags">
                 <span class="tag t-k">Godot 4</span><span class="tag t-k">GDScript</span>
@@ -877,37 +917,37 @@
 <section id="projects" class="fade-up">
     <div class="projects-header">
         <div class="section-title" data-i18n="title-projects"><span class="t-dot">./</span>projects<span class="t-slash">/</span></div>
-        <a href="https://github.com/S4MUR41Daemon" target="_blank" class="gh-link" data-i18n="gh-link">🐙 View all on GitHub →</a>
+        <a href="https://github.com/S4MUR41Daemon" target="_blank" class="gh-link" data-i18n="gh-link">&gt;&gt; View all on GitHub</a>
     </div>
     <div class="projects-grid">
 
         <div class="proj-card">
             <span class="proj-feat" data-i18n="feat-1">★ FEATURED</span>
-            <div class="proj-header"><span class="proj-name">BLOCKCHAIN</span><span class="proj-ico">⛓️</span></div>
+            <div class="proj-header"><span class="proj-name">BLOCKCHAIN</span><span class="proj-ico">&lt;=&gt;</span></div>
             <p class="proj-desc" data-i18n="proj-desc-blockchain">Blockchain system implemented from scratch in Java. Supports transactions, chain validation, and a Mempool for managing pending transactions. Includes a proof-of-work mining algorithm.</p>
             <div class="proj-tags">
                 <span class="tag t-p">Java</span><span class="tag t-c">Blockchain</span><span class="tag t-k">Cryptography</span>
             </div>
             <div class="proj-links">
-                <a href="https://github.com/S4MUR41Daemon/Blockchain" target="_blank" class="proj-btn">⌥ GitHub</a>
+                <a href="https://github.com/S4MUR41Daemon/Blockchain" target="_blank" class="proj-btn">&gt;&gt; GitHub</a>
             </div>
         </div>
 
         <div class="proj-card">
             <span class="proj-feat" data-i18n="feat-2">★ FEATURED</span>
-            <div class="proj-header"><span class="proj-name">AI_AGENT</span><span class="proj-ico">🤖</span></div>
+            <div class="proj-header"><span class="proj-name">AI_AGENT</span><span class="proj-ico">{AI}</span></div>
             <p class="proj-desc" data-i18n="proj-desc-ai">Artificial Intelligence agent with an internal toolset. Capable of reasoning, executing complex tasks, and chaining actions to autonomously automate workflows.</p>
             <div class="proj-tags">
                 <span class="tag t-p">Python</span><span class="tag t-c">AI / LLM</span><span class="tag t-k">Automation</span>
             </div>
             <div class="proj-links">
-                <a href="https://github.com/S4MUR41Daemon/AI_Agent" target="_blank" class="proj-btn">⌥ GitHub</a>
+                <a href="https://github.com/S4MUR41Daemon/AI_Agent" target="_blank" class="proj-btn">&gt;&gt; GitHub</a>
             </div>
         </div>
 
         <div class="proj-card">
             <span class="proj-feat" data-i18n="feat-3">★ FEATURED · THESIS</span>
-            <div class="proj-header"><span class="proj-name">TFG-ROGUELIKE</span><span class="proj-ico">🗡️</span></div>
+            <div class="proj-header"><span class="proj-name">TFG-ROGUELIKE</span><span class="proj-ico">/\/</span></div>
             <p class="proj-desc" data-i18n="proj-desc-roguelike">2D Roguelike video game developed in Godot 4 as my final degree project. Features procedural dungeon generation, combat system, character progression and classic roguelike mechanics.</p>
             <div class="proj-tags">
                 <span class="tag t-k">Godot 4</span><span class="tag t-k">GDScript</span>
@@ -920,36 +960,36 @@
 
         <div class="proj-card">
             <span class="proj-feat" data-i18n="feat-4">★ FEATURED</span>
-            <div class="proj-header"><span class="proj-name">OPDECKMANAGER</span><span class="proj-ico">🃏</span></div>
+            <div class="proj-header"><span class="proj-name">OPDECKMANAGER</span><span class="proj-ico">[##]</span></div>
             <p class="proj-desc" data-i18n="proj-desc-opdeck">One Piece TCG deck manager. Robust Spring Boot backend with an Angular frontend. Create, edit, manage and import decks from the collectible card game.</p>
             <div class="proj-tags">
                 <span class="tag t-p">Java</span><span class="tag t-p">Spring Boot</span><span class="tag t-c">Angular</span>
             </div>
             <div class="proj-links">
-                <a href="https://github.com/S4MUR41Daemon/OPDeckManager" target="_blank" class="proj-btn">⌥ GitHub</a>
+                <a href="https://github.com/S4MUR41Daemon/OPDeckManager" target="_blank" class="proj-btn">&gt;&gt; GitHub</a>
             </div>
         </div>
 
         <div class="proj-card">
-            <div class="proj-header"><span class="proj-name">PORT-SCANNER</span><span class="proj-ico">🔍</span></div>
+            <div class="proj-header"><span class="proj-name">PORT-SCANNER</span><span class="proj-ico">[?]</span></div>
             <p class="proj-desc" data-i18n="proj-desc-portscanner">Port scanner designed for Kali Linux environments. Uses threading to scan multiple ports in parallel with support for custom ranges and report generation.</p>
             <div class="proj-tags">
                 <span class="tag t-p">Python</span><span class="tag t-k">Security</span>
                 <span class="tag t-c">Kali Linux</span><span class="tag t-y">Threading</span>
             </div>
             <div class="proj-links">
-                <a href="https://github.com/S4MUR41Daemon/Port-Scanner" target="_blank" class="proj-btn">⌥ GitHub</a>
+                <a href="https://github.com/S4MUR41Daemon/Port-Scanner" target="_blank" class="proj-btn">&gt;&gt; GitHub</a>
             </div>
         </div>
 
         <div class="proj-card">
-            <div class="proj-header"><span class="proj-name">COINSEEKER</span><span class="proj-ico">💰</span></div>
+            <div class="proj-header"><span class="proj-name">COINSEEKER</span><span class="proj-ico">[$]</span></div>
             <p class="proj-desc" data-i18n="proj-desc-coinseeker">Web application for real-time cryptocurrency tracking. Built with JavaScript, consuming external APIs to display prices, trend charts and market data.</p>
             <div class="proj-tags">
                 <span class="tag t-c">JavaScript</span><span class="tag t-y">APIs</span><span class="tag t-c">Web</span>
             </div>
             <div class="proj-links">
-                <a href="https://github.com/S4MUR41Daemon/CoinSeeker" target="_blank" class="proj-btn">⌥ GitHub</a>
+                <a href="https://github.com/S4MUR41Daemon/CoinSeeker" target="_blank" class="proj-btn">&gt;&gt; GitHub</a>
             </div>
         </div>
 
@@ -966,7 +1006,7 @@
     <div class="ach-grid">
 
         <div class="ach-card">
-            <span class="ach-ico">🏆</span>
+            <span class="ach-ico">[*]</span>
             <div>
                 <div class="ach-name" data-i18n="ach-name-hackathon">THE WAVE HACKATHON 2025</div>
                 <div class="ach-sub" data-i18n="ach-sub-hackathon">ECODES · Project: Greenstep</div>
@@ -975,7 +1015,7 @@
         </div>
 
         <div class="ach-card">
-            <span class="ach-ico">💼</span>
+            <span class="ach-ico">[w]</span>
             <div>
                 <div class="ach-name" data-i18n="ach-name-nervia">FULL STACK INTERN · NERVIA</div>
                 <div class="ach-sub" data-i18n="ach-sub-nervia">Mar 2025 – Present · Zaragoza</div>
@@ -984,7 +1024,7 @@
         </div>
 
         <div class="ach-card">
-            <span class="ach-ico">☁️</span>
+            <span class="ach-ico">/^\</span>
             <div>
                 <div class="ach-name">AWS CLOUD PRACTITIONER</div>
                 <div class="ach-sub">Amazon Web Services · Jul 2025</div>
@@ -993,7 +1033,7 @@
         </div>
 
         <div class="ach-card">
-            <span class="ach-ico">🔷</span>
+            <span class="ach-ico">&lt;&gt;</span>
             <div>
                 <div class="ach-name">AZURE FUNDAMENTALS AZ-900</div>
                 <div class="ach-sub" data-i18n="ach-sub-azure">Microsoft · Dec 2025</div>
@@ -1002,7 +1042,7 @@
         </div>
 
         <div class="ach-card">
-            <span class="ach-ico">🎮</span>
+            <span class="ach-ico">[&gt;]</span>
             <div>
                 <div class="ach-name" data-i18n="ach-name-godot">MASTER GODOT 4 · 24h</div>
                 <div class="ach-sub" data-i18n="ach-sub-godot">Udemy · Mar 2026 · 24h</div>
@@ -1011,7 +1051,7 @@
         </div>
 
         <div class="ach-card">
-            <span class="ach-ico">🇬🇧</span>
+            <span class="ach-ico">[EN]</span>
             <div>
                 <div class="ach-name">C1 ADVANCED ENGLISH</div>
                 <div class="ach-sub" data-i18n="ach-sub-cambridge">University of Cambridge · Apr 2022</div>
@@ -1071,25 +1111,25 @@
     <p class="contact-sub" data-i18n="contact-sub"><span>// </span>Have a project in mind? Always open to new opportunities and collaborations.</p>
     <div class="contact-grid">
         <a href="https://github.com/S4MUR41Daemon" target="_blank" class="contact-card">
-            <div class="cc-ico">🐙</div>
+            <div class="cc-ico">[gh]</div>
             <div class="cc-title">GITHUB</div>
             <div class="cc-val">S4MUR41Daemon</div>
             <div class="cc-sub" data-i18n="cc-sub-github">Source code and projects</div>
         </a>
         <a href="https://linkedin.com/in/david-maicas-valero-11b882306" target="_blank" class="contact-card">
-            <div class="cc-ico">🔗</div>
+            <div class="cc-ico">[in]</div>
             <div class="cc-title">LINKEDIN</div>
             <div class="cc-val">David Maicas Valero</div>
             <div class="cc-sub" data-i18n="cc-sub-linkedin">Professional network</div>
         </a>
         <div class="contact-card">
-            <div class="cc-ico">📍</div>
+            <div class="cc-ico">[//]</div>
             <div class="cc-title" data-i18n="cc-title-location">LOCATION</div>
             <div class="cc-val" data-i18n="cc-val-location">Zaragoza, Spain</div>
             <div class="cc-sub" data-i18n="cc-sub-location">Available remotely</div>
         </div>
         <a href="AssetsMios/David_Maicas_Valero_CV.pdf" download class="contact-card">
-            <div class="cc-ico">📄</div>
+            <div class="cc-ico">[cv]</div>
             <div class="cc-title" data-i18n="cc-title-cv">RESUME</div>
             <div class="cc-val" data-i18n="cc-val-cv">Download CV</div>
             <div class="cc-sub" data-i18n="cc-sub-cv">Updated version · PDF</div>
@@ -1105,8 +1145,8 @@
         <span class="fl-cmd">echo</span> <span class="fl-str" data-i18n="footer-text">"© 2025 David Maicas Valero · Built by hand with HTML, CSS &amp; JS · No frameworks, pure craftsmanship"</span>
     </div>
     <div class="foot-icons">
-        <a href="https://github.com/S4MUR41Daemon" target="_blank" class="foot-icon" title="GitHub">🐙</a>
-        <a href="https://linkedin.com/in/david-maicas-valero-11b882306" target="_blank" class="foot-icon" title="LinkedIn">🔗</a>
+        <a href="https://github.com/S4MUR41Daemon" target="_blank" class="foot-icon" title="GitHub">[gh]</a>
+        <a href="https://linkedin.com/in/david-maicas-valero-11b882306" target="_blank" class="foot-icon" title="LinkedIn">[in]</a>
     </div>
 </footer>
 
@@ -1146,7 +1186,7 @@
             'skill-frontend': 'Frontend',
             'skill-cloud':    'Cloud &amp; DB',
             'skill-gamedev':  'Game Dev &amp; Tools',
-            'gh-link':         '🐙 View all on GitHub →',
+            'gh-link':         '>> View all on GitHub',
             'feat-1':          '★ FEATURED',
             'feat-2':          '★ FEATURED',
             'feat-3':          '★ FEATURED · THESIS',
@@ -1181,7 +1221,7 @@
             'cc-title-cv':           'RESUME',
             'cc-val-cv':             'Download CV',
             'cc-sub-cv':             'Updated version · PDF',
-            'footer-text':           '"© 2025 David Maicas Valero · Built by hand with HTML, CSS &amp; JS · No frameworks, pure craftsmanship"',
+            'footer-text':           '"© 2025 David Maicas Valero · S4MUR41Daemon · Zaragoza, ES"',
         },
         es: {
             'nav-home':         './inicio',
@@ -1211,7 +1251,7 @@
             'skill-frontend': 'Frontend',
             'skill-cloud':    'Cloud &amp; DB',
             'skill-gamedev':  'Game Dev &amp; Tools',
-            'gh-link':         '🐙 Ver todos en GitHub →',
+            'gh-link':         '>> Ver todos en GitHub',
             'feat-1':          '★ DESTACADO',
             'feat-2':          '★ DESTACADO',
             'feat-3':          '★ DESTACADO · TFG',
@@ -1246,7 +1286,7 @@
             'cc-title-cv':           'CURRICULUM',
             'cc-val-cv':             'Descargar CV',
             'cc-sub-cv':             'Versión actualizada · PDF',
-            'footer-text':           '"© 2025 David Maicas Valero · Construido a mano con HTML, CSS &amp; JS · No frameworks, puro craftsmanship"',
+            'footer-text':           '"© 2025 David Maicas Valero · S4MUR41Daemon · Zaragoza, ES"',
         }
     };
 
