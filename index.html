@@ -296,7 +296,6 @@
             background: rgba(38,225,234,0.12);
             box-shadow: 0 0 16px rgba(38,225,234,0.4);
         }
-
         .nav-toggle {
             display: none;
             flex-direction: column; gap: 5px; cursor: pointer;
@@ -906,7 +905,6 @@
         .cc-title { font-family: var(--font-hd); font-size: 0.78rem; font-weight:700; letter-spacing: 2.5px; color: var(--text); margin-bottom: 0.28rem; text-transform: uppercase; }
         .cc-val   { font-family: var(--font-mono); font-size: 0.78rem; color: var(--cyan); letter-spacing: 0.5px; }
         .cc-sub   { font-size:0.73rem; color:var(--text-muted); margin-top:.2rem; }
-
         /* ═══════════════════════════════════════
            FOOTER
         ═══════════════════════════════════════ */
@@ -1204,7 +1202,7 @@
         <li><a href="#achievements" data-i18n="nav-achievements">./achievements</a></li>
         <li><a href="#contact"      data-i18n="nav-contact">./contact</a></li>
     </ul>
-    <a href="AssetsMios/David_Maicas_Valero_CV.pdf" download class="nav-cv" data-i18n="nav-cv">⬇ CV</a>
+    <a href="AssetsMios/David_Maicas_Valero_CV_EN.pdf" download class="nav-cv" id="navCV" data-i18n="nav-cv">⬇ CV</a>
 </nav>
 
 <!-- ════════════════════════════════════════
@@ -1240,7 +1238,7 @@
                 <a href="#projects" class="btn btn-primary"  data-i18n="hero-btn-proj">&lt;/&gt;&nbsp;VIEW PROJECTS</a>
                 <a href="terminal/index.html" class="btn btn-ghost" data-i18n="hero-btn-terminal">[&gt;]&nbsp;ENTER TERMINAL</a>
                 <a href="#contact"  class="btn btn-ghost"    data-i18n="hero-btn-contact">✉&nbsp;CONTACT</a>
-                <a href="AssetsMios/David_Maicas_Valero_CV.pdf" download class="btn btn-ghost-pink" data-i18n="hero-btn-cv">⬇&nbsp;CV</a>
+                <a href="AssetsMios/David_Maicas_Valero_CV_EN.pdf" download class="btn btn-ghost-pink" id="heroCV" data-i18n="hero-btn-cv">⬇&nbsp;CV</a>
             </div>
         </div>
         <div class="hero-right">
@@ -1554,7 +1552,7 @@
             <div class="cc-val" data-i18n="cc-val-location">Zaragoza, Spain</div>
             <div class="cc-sub" data-i18n="cc-sub-location">Available remotely</div>
         </div>
-        <a href="AssetsMios/David_Maicas_Valero_CV.pdf" download class="contact-card">
+        <a href="AssetsMios/David_Maicas_Valero_CV_EN.pdf" download class="contact-card" id="ccCV">
             <div class="cc-ico">[cv]</div>
             <div class="cc-title" data-i18n="cc-title-cv">RESUME</div>
             <div class="cc-val" data-i18n="cc-val-cv">Download CV</div>
@@ -1756,6 +1754,15 @@
         });
         document.getElementById('btnEn').classList.toggle('active', lang === 'en');
         document.getElementById('btnEs').classList.toggle('active', lang === 'es');
+
+        /* ── CV: descarga según idioma activo ── */
+        const cvHref = lang === 'en'
+            ? 'AssetsMios/David_Maicas_Valero_CV_EN.pdf'
+            : 'AssetsMios/David_Maicas_Valero_CV_ES.pdf';
+        ['navCV', 'heroCV', 'ccCV'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.href = cvHref;
+        });
     }
 
     document.getElementById('btnEn').addEventListener('click', () => setLang('en'));
