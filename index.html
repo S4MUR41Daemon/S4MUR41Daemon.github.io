@@ -600,6 +600,11 @@
             box-shadow: 0 0 22px rgba(255,206,58,0.45);
         }
 
+        .icon-frame {
+            position: relative;
+            display: inline-block;
+            padding-bottom: 18px;
+        }
         .icon-wrap {
             width: 260px; height: 260px;
             position: relative;
@@ -628,7 +633,7 @@
             50%     { opacity:.8; transform:scale(1.08); }
         }
         .icon-tag {
-            position: absolute; bottom: -12px; left: 50%;
+            position: absolute; bottom: 0; left: 50%;
             transform: translateX(-50%);
             font-family: var(--font-mono); font-size: 0.68rem;
             letter-spacing: 1.5px;
@@ -1237,9 +1242,11 @@
             </div>
         </div>
         <div class="hero-right">
-            <div class="icon-wrap">
-                <div class="icon-glow"></div>
-                <img src="AssetsMios/MyIcon.png" alt="S4MUR41Daemon avatar">
+            <div class="icon-frame">
+                <div class="icon-wrap">
+                    <div class="icon-glow"></div>
+                    <img src="AssetsMios/MyIcon.png" alt="S4MUR41Daemon avatar">
+                </div>
                 <div class="icon-tag">he/him · Zaragoza</div>
             </div>
         </div>
