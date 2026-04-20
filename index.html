@@ -485,9 +485,9 @@
 
         .hero-name {
             font-family: var(--font-hd);
-            font-size: clamp(2.2rem, 5.5vw, 4.6rem);
+            font-size: clamp(1.4rem, 1rem + 3vw, 4.6rem);
             font-weight: 700;
-            letter-spacing: 4px;
+            letter-spacing: clamp(1px, 0.3vw, 4px);
             text-transform: uppercase;
             color: #fff;
             position: relative;
@@ -1078,7 +1078,7 @@
             .panel { padding: 1.4rem 1.2rem; }
             #home .panel { padding: 1.8rem 1.4rem; }
             .term-body { padding: 1.4rem 1.2rem; font-size: 0.8rem; }
-            .hero-name { letter-spacing: 1px; font-size: clamp(1.2rem, 6.5vw, 2.2rem); }
+            .hero-name { letter-spacing: 1px; }
             .nav-links a { clip-path: none; }
             #navbar {
                 top: 0; left: 0; right: 0;
