@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S4MUR41DAEMON_OS · Terminal</title>
+    <link rel="icon" href="../AssetsMios/MyIcon.png" type="image/png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- Background layers -->
+<div class="bg-aura"></div>
+<div class="bg-grid"></div>
+<div class="vignette"></div>
+<div class="scanlines"></div>
+
+<!-- HUD chrome (viewport overlays) -->
+<div class="hud-corners" aria-hidden="true">
+    <span class="hc hc-tl"></span><span class="hc hc-tr"></span>
+    <span class="hc hc-bl"></span><span class="hc hc-br"></span>
+</div>
+<div class="hud-topbar" aria-hidden="true">
+    <span class="ht-slash">//</span>
+    <span class="ht-idx">TTY_01</span><span class="ht-u">_</span>
+</div>
+<div class="hud-ticks hud-ticks-l" aria-hidden="true">
+    <span class="ht-tick w-l"></span><span class="ht-tick w-s"></span>
+    <span class="ht-tick w-s"></span><span class="ht-tick w-m"></span>
+    <span class="ht-tick w-s"></span><span class="ht-tick w-s"></span>
+    <span class="ht-tick w-l"></span><span class="ht-tick w-s"></span>
+    <span class="ht-tick w-s"></span><span class="ht-tick w-m"></span>
+    <span class="ht-tick w-s"></span><span class="ht-tick w-l"></span>
+</div>
+<div class="hud-ticks hud-ticks-r" aria-hidden="true">
+    <span class="ht-tick w-l"></span><span class="ht-tick w-s"></span>
+    <span class="ht-tick w-s"></span><span class="ht-tick w-m"></span>
+    <span class="ht-tick w-s"></span><span class="ht-tick w-s"></span>
+    <span class="ht-tick w-l"></span><span class="ht-tick w-s"></span>
+    <span class="ht-tick w-s"></span><span class="ht-tick w-m"></span>
+    <span class="ht-tick w-s"></span><span class="ht-tick w-l"></span>
+</div>
+<div class="hud-footer-meta" aria-hidden="true">
+    <div class="hfm-left">
+        <span class="hfm-accent">SHELL</span>
+        <span class="hfm-sep">//</span>
+        <span id="hudStamp">00:00:00</span>
+        <span class="hfm-sep">//</span>
+        <span class="hfm-muted">S4MUR41DAEMON</span>
+    </div>
+    <div class="hfm-right">
+        <span class="hfm-muted">NET</span>
+        <span class="hfm-sep">/</span>
+        <span class="hfm-accent">/dev/neural</span>
+        <span class="hfm-sep">//</span>
+        <span class="hfm-accent">ONLINE</span>
+    </div>
+</div>
+
+<!-- Main terminal -->
+<div class="crt-shell">
+    <div class="panel crt">
+        <div class="crt-topbar">
+            <span class="tb-slash">//</span>
+            <span class="tb-title">S4MUR41<b>DAEMON_OS</b></span>
+            <span class="tb-slash">//</span>
+            <span class="tb-path">v0.1 · /dev/neural</span>
+            <span class="tb-slash">//</span>
+            <span class="tb-status">ONLINE</span>
+            <a href="../index.html" class="back-link">&lt;&lt; RETURN TO PORTFOLIO</a>
+        </div>
+
+        <div class="crt-body" id="crtBody">
+            <div id="output"></div>
+        </div>
+
+        <div class="hint">
+            <kbd>↑</kbd><kbd>↓</kbd> history · <kbd>Tab</kbd> complete · <kbd>Ctrl</kbd>+<kbd>L</kbd> clear · type <kbd>help</kbd>
+        </div>
+
+        <form class="prompt-row" id="promptForm" autocomplete="off">
+            <span class="prompt-label">
+                <span class="user">root</span>@<span class="host">daemon</span>:<span class="path">~</span>$
+            </span>
+            <input id="cmdInput" type="text" autocomplete="off" spellcheck="false" autocapitalize="off" disabled />
+        </form>
+    </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

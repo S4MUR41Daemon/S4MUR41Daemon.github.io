@@ -605,26 +605,30 @@
             display: inline-block;
             padding-bottom: 18px;
         }
+        .icon-frame {
+            display: flex; flex-direction: column;
+            align-items: center; gap: 1.1rem;
+            position: relative;
+        }
         .icon-wrap {
             width: 260px; height: 260px;
             position: relative;
-            padding: 10px;
             clip-path: polygon(18px 0, 100% 0, 100% calc(100% - 18px), calc(100% - 18px) 100%, 0 100%, 0 18px);
             background: var(--bg-panel);
             border: 1px solid var(--cyan);
             box-shadow: 0 0 22px rgba(38,225,234,0.25), inset 0 0 30px rgba(38,225,234,0.05);
+            overflow: hidden;
         }
         .icon-wrap img {
             width:100%; height:100%;
             object-fit: cover;
             display: block; position: relative; z-index: 1;
-            clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px);
             filter: saturate(1.05) contrast(1.02);
         }
         .icon-glow {
             position: absolute; inset: -30px;
             background: radial-gradient(circle, rgba(38,225,234,0.18) 0%, transparent 65%);
-            z-index: -2;
+            z-index: 0;
             animation: icon-pulse 3.5s ease-in-out infinite;
             pointer-events: none;
         }
@@ -633,16 +637,14 @@
             50%     { opacity:.8; transform:scale(1.08); }
         }
         .icon-tag {
-            position: absolute; bottom: 0; left: 50%;
-            transform: translateX(-50%);
-            font-family: var(--font-mono); font-size: 0.68rem;
+            font-family: var(--font-mono); font-size: 0.7rem;
             letter-spacing: 1.5px;
             color: var(--cyan);
             background: var(--bg);
             border: 1px solid var(--cyan);
-            padding: 0.22rem 0.8rem;
-            white-space: nowrap; z-index: 2;
-            clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
+            padding: 0.28rem 0.9rem;
+            white-space: nowrap;
+            clip-path: polygon(7px 0, 100% 0, 100% calc(100% - 7px), calc(100% - 7px) 100%, 0 100%, 0 7px);
         }
 
         /* ═══════════════════════════════════════
@@ -1236,7 +1238,7 @@
             </div>
             <div class="hero-btns">
                 <a href="#projects" class="btn btn-primary"  data-i18n="hero-btn-proj">&lt;/&gt;&nbsp;VIEW PROJECTS</a>
-                <a href="terminal.html" class="btn btn-ghost" data-i18n="hero-btn-terminal">[&gt;]&nbsp;ENTER TERMINAL</a>
+                <a href="terminal/index.html" class="btn btn-ghost" data-i18n="hero-btn-terminal">[&gt;]&nbsp;ENTER TERMINAL</a>
                 <a href="#contact"  class="btn btn-ghost"    data-i18n="hero-btn-contact">✉&nbsp;CONTACT</a>
                 <a href="AssetsMios/David_Maicas_Valero_CV.pdf" download class="btn btn-ghost-pink" data-i18n="hero-btn-cv">⬇&nbsp;CV</a>
             </div>
