@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S4MUR41DAEMON_OS · Terminal</title>
+    <link rel="icon" href="AssetsMios/MyIcon.png" type="image/png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg:           #04000a;
+            --bg2:          #07010f;
+            --border:       #1c0035;
+            --border-glow:  #4d009a;
+            --purple:       #b800ff;
+            --purple-dim:   #7a00aa;
+            --cyan:         #00e5ff;
+            --pink:         #ff0090;
+            --green:        #39ff14;
+            --yellow:       #ffe600;
+            --text:         #d9d9e6;
+            --text-muted:   #8a8aa8;
+            --font-hd:      'Orbitron', monospace;
+            --font-mono:    'Share Tech Mono', monospace;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html, body { height: 100%; }
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--font-mono);
+            font-size: 15px;
+            line-height: 1.45;
+            overflow: hidden;
+            position: relative;
+        }
+        a { color: inherit; text-decoration: none; }
+
+        /* ── Capas decorativas ── */
+        .bg-grid {
+            position: fixed; inset: 0; pointer-events: none; z-index: 0;
+            background-image:
+                linear-gradient(rgba(120,0,200,0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(120,0,200,0.05) 1px, transparent 1px);
+            background-size: 48px 48px;
+        }
+        .bg-aura {
+            position: fixed; inset: 0; pointer-events: none; z-index: 0;
+            background:
+                radial-gradient(ellipse 60% 70% at 50% 50%, rgba(100,0,160,0.15) 0%, transparent 70%),
+                radial-gradient(ellipse 40% 30% at 20% 90%, rgba(0,229,255,0.06) 0%, transparent 65%);
+        }
+        .scanlines {
+            position: fixed; inset: 0; pointer-events: none; z-index: 9999;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(0,0,0,0.10) 2px,
+                rgba(0,0,0,0.10) 4px
+            );
+        }
+        .vignette {
+            position: fixed; inset: 0; pointer-events: none; z-index: 9998;
+            box-shadow: inset 0 0 180px 20px rgba(0,0,0,0.85);
+        }
+
+        /* ── Layout CRT ── */
+        .crt {
+            position: relative; z-index: 1;
+            height: 100vh;
+            display: flex; flex-direction: column;
+            padding: 0;
+        }
+        .crt-topbar {
+            display: flex; align-items: center;
+            gap: 1rem;
+            padding: 0.6rem 1.2rem;
+            border-bottom: 1px solid var(--border-glow);
+            background: rgba(7,1,15,0.85);
+            backdrop-filter: blur(6px);
+            font-size: 0.75rem;
+            flex-shrink: 0;
+        }
+        .crt-topbar .dots { display: flex; gap: 6px; }
+        .crt-topbar .dot { width: 10px; height: 10px; border-radius: 50%; }
+        .dot-red { background: #ff5f57; }
+        .dot-yel { background: #febc2e; }
+        .dot-grn { background: #28c840; }
+        .crt-topbar .path {
+            font-family: var(--font-mono);
+            color: var(--text-muted);
+            letter-spacing: 1px;
+        }
+        .crt-topbar .path b { color: var(--purple); font-weight: 400; }
+        .back-link {
+            margin-left: auto;
+            font-family: var(--font-hd);
+            font-size: 0.6rem;
+            letter-spacing: 2px;
+            color: var(--cyan);
+            border: 1px solid rgba(0,229,255,0.35);
+            padding: 0.3rem 0.75rem;
+            border-radius: 4px;
+            transition: background 0.2s, box-shadow 0.2s;
+        }
+        .back-link:hover {
+            background: rgba(0,229,255,0.08);
+            box-shadow: 0 0 12px rgba(0,229,255,0.35);
+        }
+
+        .crt-body {
+            flex: 1 1 auto;
+            overflow-y: auto;
+            padding: 1.2rem 1.4rem 0.5rem;
+        }
+        .crt-body::-webkit-scrollbar { width: 6px; }
+        .crt-body::-webkit-scrollbar-track { background: transparent; }
+        .crt-body::-webkit-scrollbar-thumb { background: var(--purple-dim); border-radius: 3px; }
+
+        #output {
+            white-space: pre-wrap;
+            word-break: break-word;
+            font-family: var(--font-mono);
+            color: var(--text);
+        }
+        #output .line         { padding: 0.05rem 0; }
+        #output .line-ok      { color: var(--green); }
+        #output .line-err     { color: var(--pink); }
+        #output .line-warn    { color: var(--yellow); }
+        #output .line-info    { color: var(--cyan); }
+        #output .line-sys     { color: var(--purple); }
+        #output .line-muted   { color: var(--text-muted); }
+        #output .line-echo    { color: var(--text-muted); font-style: italic; }
+        #output .ascii        {
+            white-space: pre;
+            color: var(--purple);
+            text-shadow: 0 0 8px rgba(184,0,255,0.45);
+            font-family: var(--font-mono);
+            line-height: 1.15;
+            padding: 0.4rem 0;
+        }
+        #output .ascii.cyan   { color: var(--cyan);  text-shadow: 0 0 8px rgba(0,229,255,0.4); }
+        #output .ascii.green  { color: var(--green); text-shadow: 0 0 6px rgba(57,255,20,0.35); }
+
+        /* ── Prompt form ── */
+        .prompt-row {
+            display: flex; align-items: center;
+            padding: 0.6rem 1.4rem 1.1rem;
+            border-top: 1px solid var(--border);
+            background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.25) 100%);
+            flex-shrink: 0;
+        }
+        .prompt-label {
+            color: var(--purple);
+            white-space: nowrap;
+            margin-right: 0.5rem;
+            text-shadow: 0 0 6px rgba(184,0,255,0.45);
+        }
+        .prompt-label .user { color: var(--cyan); }
+        .prompt-label .host { color: var(--pink); }
+        .prompt-label .path { color: var(--text-muted); }
+        #cmdInput {
+            flex: 1 1 auto;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: var(--text);
+            font-family: var(--font-mono);
+            font-size: 15px;
+            caret-color: var(--cyan);
+            padding: 0;
+        }
+        #cmdInput:disabled { opacity: 0.5; }
+
+        .cursor-block {
+            display: inline-block;
+            width: 9px; height: 1.05em;
+            background: var(--cyan);
+            margin-left: 2px;
+            vertical-align: text-bottom;
+            animation: blink 1s step-end infinite;
+        }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+        .hint {
+            padding: 0 1.4rem 0.6rem;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+        }
+        .hint kbd {
+            border: 1px solid var(--border-glow);
+            border-radius: 3px;
+            padding: 0 4px;
+            color: var(--text);
+            background: rgba(120,0,200,0.08);
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+        }
+
+        @media (max-width: 600px) {
+            body { font-size: 13px; }
+            .crt-topbar { padding: 0.5rem 0.8rem; font-size: 0.65rem; gap: 0.6rem; }
+            .back-link  { font-size: 0.55rem; padding: 0.25rem 0.55rem; }
+            .crt-body   { padding: 0.9rem 0.9rem 0.3rem; }
+            .prompt-row { padding: 0.5rem 0.9rem 0.8rem; }
+            .hint       { padding: 0 0.9rem 0.5rem; font-size: 0.6rem; }
+            #output .ascii { font-size: 11px; line-height: 1.1; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="bg-aura"></div>
+<div class="bg-grid"></div>
+<div class="vignette"></div>
+<div class="scanlines"></div>
+
+<div class="crt">
+    <div class="crt-topbar">
+        <div class="dots">
+            <span class="dot dot-red"></span>
+            <span class="dot dot-yel"></span>
+            <span class="dot dot-grn"></span>
+        </div>
+        <span class="path">S4MUR41DAEMON_OS <b>v0.1</b> · /dev/neural</span>
+        <a href="index.html" class="back-link">&lt;&lt; RETURN TO PORTFOLIO</a>
+    </div>
+
+    <div class="crt-body" id="crtBody">
+        <div id="output"></div>
+    </div>
+
+    <div class="hint">
+        <kbd>↑</kbd><kbd>↓</kbd> history · <kbd>Tab</kbd> complete · <kbd>Ctrl</kbd>+<kbd>L</kbd> clear · type <kbd>help</kbd>
+    </div>
+
+    <form class="prompt-row" id="promptForm" autocomplete="off">
+        <span class="prompt-label">
+            <span class="user">root</span>@<span class="host">daemon</span>:<span class="path">~</span>$
+        </span>
+        <input id="cmdInput" type="text" autocomplete="off" spellcheck="false" autocapitalize="off" disabled />
+    </form>
+</div>
+
+<script>
+(function () {
+    'use strict';
+
+    /* ═══════════════════════════════════════
+       DOM refs
+    ═══════════════════════════════════════ */
+    const output   = document.getElementById('output');
+    const crtBody  = document.getElementById('crtBody');
+    const form     = document.getElementById('promptForm');
+    const input    = document.getElementById('cmdInput');
+
+    /* ═══════════════════════════════════════
+       ASCII ART (from docs/terminal/ascii-art.md)
+    ═══════════════════════════════════════ */
+    const ART_BOOT_LOGO = String.raw`
+   ██████╗ ██╗  ██╗███╗   ███╗██╗   ██╗██████╗ ██╗  ██╗ ██╗
+   ██╔════╝██║  ██║████╗ ████║██║   ██║██╔══██╗██║  ██║███║
+   ╚█████╗ ███████║██╔████╔██║██║   ██║██████╔╝███████║╚██║
+    ╚═══██╗╚════██║██║╚██╔╝██║██║   ██║██╔══██╗╚════██║ ██║
+   ██████╔╝     ██║██║ ╚═╝ ██║╚██████╔╝██║  ██║     ██║ ██║
+   ╚═════╝      ╚═╝╚═╝     ╚═╝ ╚═════╝ ╚═╝  ╚═╝     ╚═╝ ╚═╝
+              D  A  E  M  O  N   ·   O  S    v 0 . 1`;
+
+    const ART_NEON_ALLEY = String.raw`
+    ░▒▓█  N E O N   A L L E Y  █▓▒░
+    ┌──────────────────────────────────────────┐
+    │  ▓▒░      ░▒▓  rain.dat streams      ▓▒░ │
+    │  ██   ║   ░░   ║   ▒▒   ║   ██   ║   ▓▓  │
+    │  ██   ║   ░░   ║   ▒▒   ║   ██   ║   ▓▓  │
+    │  ──────────────────────────────────────  │
+    │   [ datapad ]                            │
+    └────────────────── n ─────────────────────┘`;
+
+    const ART_SERVER_ROOM = String.raw`
+    ░▒▓█  S E R V E R   R O O M  █▓▒░
+    ┌──────────────────────────────────────────┐
+    │  ▓▓▓ │░│ ▓▓▓ │░│ ▓▓▓ │░│ ▓▓▓ │░│ ▓▓▓ │░│  │
+    │  ▓▓▓ │░│ ▓▓▓ │░│ ▓▓▓ │░│ ▓▓▓ │░│ ▓▓▓ │░│  │
+    │  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░  │
+    │   ╔════ ARASAKA / VAULT-03 ════╗   ● LED │
+    │   ║  [locked]   [hack door]   ║          │
+    │   ╚═══════════════════════════╝          │
+    └────────────────── s ─────────────────────┘`;
+
+    const ART_MAINFRAME = String.raw`
+    ░▒▓█  M A I N F R A M E  █▓▒░
+    ┌──────────────────────────────────────────┐
+    │  ║░║  ║░║  ║░║  ║░║  ║░║  ║░║  ║░║  ║░║  │
+    │  ║▓║  ║▓║  ║▓║  ║▓║  ║▓║  ║▓║  ║▓║  ║▓║  │
+    │  ║▓║  ║▓║  ║▓║  ║▓║  ║▓║  ║▓║  ║▓║  ║▓║  │
+    │           ╔═══════════════════╗           │
+    │           ║  >  YOU MADE IT   ║           │
+    │           ╚═══════════════════╝           │
+    └────────────────── s ─────────────────────┘`;
+
+    const ART_SIGNATURE = String.raw`
+      ╔════════════════════════════════════════╗
+      ║  // signed: S4MUR41DAEMON              ║
+      ║  // aka: David Maicas Valero           ║
+      ║  // Zaragoza · 2087 · ghost-in-wire    ║
+      ║  // thanks for playing.                ║
+      ╚════════════════════════════════════════╝`;
+
+    /* ═══════════════════════════════════════
+       STATE
+    ═══════════════════════════════════════ */
+    const state = {
+        phase: 'boot',                    // 'boot' | 'identify' | 'playing'
+        awaiting: null,                   // 'alias' while collecting character name
+        identity: { alias: null },
+        room: 'neon_alley',
+        inventory: [],
+        flags: {},
+        history: [],
+        historyIdx: -1,
+        bootDone: false
+    };
+
+    const MAX_ALIAS_LEN = 16;
+    const DEFAULT_ALIAS = 'S4MUR41DAEMON';
+
+    /* ═══════════════════════════════════════
+       ITEMS
+    ═══════════════════════════════════════ */
+    const ITEMS = {
+        datapad: {
+            name: 'Datapad',
+            desc: 'Cracked screen, but the encryption key is still intact. Reads: "ARASAKA-V3-BYPASS".'
+        }
+    };
+
+    /* ═══════════════════════════════════════
+       ROOMS
+    ═══════════════════════════════════════ */
+    const ROOMS = {
+        neon_alley: {
+            name: 'Neon Alley',
+            ascii: ART_NEON_ALLEY,
+            asciiClass: '',
+            desc: 'Rain. Purple signs blink across puddles. A discarded datapad lies by a fire escape. The alley ends in a rusted steel door to the north.',
+            exits: { n: 'server_room' },
+            items: ['datapad'],
+            hackables: {},
+            scanInfo: 'Wi-Fi nets: 3 hidden · surveillance: offline · trash density: high.'
+        },
+        server_room: {
+            name: 'Abandoned Server Room',
+            ascii: ART_SERVER_ROOM,
+            asciiClass: '',
+            desc: 'Racks hum in the dark. A red LED pulses on a locked door to the north. Dust coats every surface. The door reads: "ARASAKA / VAULT-03".',
+            exits: { s: 'neon_alley' }, // norte se añade al hackear
+            items: [],
+            hackables: {
+                door: {
+                    requires: ['datapad'],
+                    onSuccess() {
+                        state.flags.door_open = true;
+                        ROOMS.server_room.exits.n = 'mainframe';
+                        println('[OK] Handshake accepted. Vault door slides open to the north.', 'line-ok');
+                    },
+                    onFail() {
+                        println('[WARN] Encrypted handshake. You need valid credentials to bypass the ICE.', 'line-warn');
+                    }
+                }
+            },
+            scanInfo: 'Firewall: ARASAKA-ICE mk.III · door lock: V3 cipher · needs a datapad key.'
+        },
+        mainframe: {
+            name: 'Corporate Mainframe',
+            ascii: ART_MAINFRAME,
+            asciiClass: 'cyan',
+            desc: 'The vault opens into a cathedral of servers. At the center, a single terminal glows. Its screen spells: "YOU MADE IT".',
+            exits: { s: 'server_room' },
+            items: [],
+            hackables: {},
+            scanInfo: 'Core temperature: 18°C · uptime: 14 years · payload: a message, waiting.',
+            onEnter() {
+                if (state.flags.mainframe_seen) return;
+                state.flags.mainframe_seen = true;
+                setTimeout(() => {
+                    printAscii(ART_SIGNATURE, 'green');
+                    println('', '');
+                    println('[SYSTEM] The mainframe recognizes you.', 'line-sys');
+                    println('[SYSTEM] Your name is written in the logs. Forever.', 'line-sys');
+                    println('', '');
+                    println('> Type "exit" to return to the portfolio, or "look" to stay a while.', 'line-info');
+                }, 250);
+            }
+        }
+    };
+
+    /* ═══════════════════════════════════════
+       OUTPUT HELPERS
+    ═══════════════════════════════════════ */
+    function println(text, cls) {
+        const div = document.createElement('div');
+        div.className = 'line' + (cls ? ' ' + cls : '');
+        div.textContent = text;
+        output.appendChild(div);
+        crtBody.scrollTop = crtBody.scrollHeight;
+    }
+    function printAscii(text, variant) {
+        const pre = document.createElement('div');
+        pre.className = 'ascii' + (variant ? ' ' + variant : '');
+        pre.textContent = text;
+        output.appendChild(pre);
+        crtBody.scrollTop = crtBody.scrollHeight;
+    }
+    function echoCmd(raw) {
+        const div = document.createElement('div');
+        div.className = 'line line-echo';
+        div.textContent = 'root@daemon:~$ ' + raw;
+        output.appendChild(div);
+    }
+    function clearOutput() {
+        output.innerHTML = '';
+    }
+
+    function sanitizeAlias(raw) {
+        const trimmed = (raw || '').trim();
+        if (!trimmed) return DEFAULT_ALIAS;
+        // Only allow printable ASCII & limit length
+        const clean = trimmed.replace(/[^\x20-\x7E]/g, '').slice(0, MAX_ALIAS_LEN);
+        return clean || DEFAULT_ALIAS;
+    }
+
+    function updatePromptUser() {
+        const userEl = document.querySelector('.prompt-label .user');
+        if (!userEl || !state.identity.alias) return;
+        userEl.textContent = state.identity.alias.toLowerCase().slice(0, 12);
+    }
+
+    function askForAlias() {
+        println('', '');
+        println('[SYSTEM] Neural handshake incomplete.', 'line-sys');
+        println('[SYSTEM] Declare your identity before interfacing with the grid.', 'line-sys');
+        println('', '');
+        println('  > Enter your alias (press Enter for "' + DEFAULT_ALIAS + '"):', 'line-info');
+        state.awaiting = 'alias';
+    }
+
+    function confirmIdentity() {
+        println('', '');
+        println('[OK] Handshake accepted. Welcome, ' + state.identity.alias + '.', 'line-ok');
+        println('[SYSTEM] Uploading persona into the grid...', 'line-sys');
+        updatePromptUser();
+        setTimeout(() => {
+            state.phase = 'playing';
+            println('', '');
+            enterRoom('neon_alley');
+        }, 750);
+    }
+
+    /* ═══════════════════════════════════════
+       ROOM RENDERING
+    ═══════════════════════════════════════ */
+    function describeCurrentRoom() {
+        const room = ROOMS[state.room];
+        printAscii(room.ascii, room.asciiClass);
+        println(room.desc, 'line-info');
+
+        if (room.items && room.items.length > 0) {
+            const names = room.items.map(id => ITEMS[id] ? ITEMS[id].name : id).join(', ');
+            println('You see: ' + names + '.', 'line-muted');
+        }
+        const exits = Object.keys(room.exits);
+        if (exits.length > 0) {
+            println('Exits: ' + exits.join(', ') + '.', 'line-muted');
+        } else {
+            println('No visible exits.', 'line-muted');
+        }
+    }
+
+    function enterRoom(id) {
+        state.room = id;
+        const room = ROOMS[id];
+        println('', '');
+        println('> You enter: ' + room.name, 'line-info');
+        describeCurrentRoom();
+        if (typeof room.onEnter === 'function') room.onEnter();
+    }
+
+    /* ═══════════════════════════════════════
+       COMMANDS
+    ═══════════════════════════════════════ */
+    const COMMANDS = {
+        help: {
+            aliases: ['?'],
+            help: 'help — list all commands',
+            run(args) {
+                println('', '');
+                println('Available commands:', 'line-info');
+                const entries = Object.keys(COMMANDS).sort();
+                entries.forEach(name => {
+                    const cmd = COMMANDS[name];
+                    const aliases = cmd.aliases && cmd.aliases.length
+                        ? '  [aliases: ' + cmd.aliases.join(', ') + ']' : '';
+                    println('  ' + cmd.help + aliases, 'line-muted');
+                });
+                println('', '');
+                println('Tip: "look" describes your surroundings. "scan" reveals extra info.', 'line-info');
+            }
+        },
+        look: {
+            aliases: ['l'],
+            help: 'look [item] — describe the room or an item',
+            run(args) {
+                if (args.length === 0) {
+                    describeCurrentRoom();
+                    return;
+                }
+                const target = args[0].toLowerCase();
+                const room = ROOMS[state.room];
+                if (room.items.includes(target) && ITEMS[target]) {
+                    println(ITEMS[target].desc, 'line-info');
+                    return;
+                }
+                if (state.inventory.includes(target) && ITEMS[target]) {
+                    println(ITEMS[target].desc, 'line-info');
+                    return;
+                }
+                println('[ERR] Nothing like that here.', 'line-err');
+            }
+        },
+        go: {
+            aliases: ['move', 'walk'],
+            help: 'go <n|s|e|w> — move in a direction',
+            run(args) {
+                if (args.length === 0) {
+                    println('[ERR] Usage: go <n|s|e|w>', 'line-err');
+                    return;
+                }
+                const dirMap = {
+                    n: 'n', north: 'n',
+                    s: 's', south: 's',
+                    e: 'e', east:  'e',
+                    w: 'w', west:  'w'
+                };
+                const dir = dirMap[args[0].toLowerCase()];
+                if (!dir) {
+                    println('[ERR] Unknown direction. Use n, s, e or w.', 'line-err');
+                    return;
+                }
+                const room = ROOMS[state.room];
+                const dest = room.exits[dir];
+                if (!dest) {
+                    println('[ERR] No exit that way.', 'line-err');
+                    return;
+                }
+                enterRoom(dest);
+            }
+        },
+        take: {
+            aliases: ['get', 'pick'],
+            help: 'take <item> — pick up an item',
+            run(args) {
+                if (args.length === 0) {
+                    println('[ERR] Usage: take <item>', 'line-err');
+                    return;
+                }
+                const target = args[0].toLowerCase();
+                const room = ROOMS[state.room];
+                const idx = room.items.indexOf(target);
+                if (idx === -1) {
+                    println('[ERR] Nothing like that here.', 'line-err');
+                    return;
+                }
+                room.items.splice(idx, 1);
+                state.inventory.push(target);
+                const name = ITEMS[target] ? ITEMS[target].name : target;
+                println('[OK] You take the ' + name + '.', 'line-ok');
+            }
+        },
+        use: {
+            aliases: [],
+            help: 'use <item> [on <target>] — use an item from the inventory',
+            run(args) {
+                if (args.length === 0) {
+                    println('[ERR] Usage: use <item> [on <target>]', 'line-err');
+                    return;
+                }
+                const item = args[0].toLowerCase();
+                if (!state.inventory.includes(item)) {
+                    println("[ERR] You don't carry that.", 'line-err');
+                    return;
+                }
+                // use <item> on <target>
+                if (args.length >= 3 && args[1].toLowerCase() === 'on') {
+                    const target = args[2].toLowerCase();
+                    const room = ROOMS[state.room];
+                    if (item === 'datapad' && target === 'door' && room.hackables.door) {
+                        COMMANDS.hack.run([target]);
+                        return;
+                    }
+                    println("[WARN] Nothing happens when you use " + item + " on " + target + ".", 'line-warn');
+                    return;
+                }
+                println('[SYSTEM] You turn the ' + item + ' over in your hands. Nothing happens here.', 'line-sys');
+            }
+        },
+        inventory: {
+            aliases: ['inv', 'i'],
+            help: 'inventory — list items you carry',
+            run() {
+                if (state.inventory.length === 0) {
+                    println('[SYSTEM] Inventory empty.', 'line-sys');
+                    return;
+                }
+                const lines = state.inventory.map(id => {
+                    const it = ITEMS[id];
+                    return '  - ' + (it ? it.name : id);
+                });
+                println('Inventory:', 'line-info');
+                lines.forEach(l => println(l, 'line-muted'));
+            }
+        },
+        scan: {
+            aliases: [],
+            help: 'scan — deep scan of the current room',
+            run() {
+                const room = ROOMS[state.room];
+                println('[SCAN] ' + (room.scanInfo || 'No signal.'), 'line-info');
+                const hackTargets = Object.keys(room.hackables);
+                if (hackTargets.length > 0) {
+                    println('[SCAN] Hackable: ' + hackTargets.join(', '), 'line-warn');
+                }
+            }
+        },
+        hack: {
+            aliases: [],
+            help: 'hack <target> — attempt to breach a system',
+            run(args) {
+                if (args.length === 0) {
+                    println('[ERR] Usage: hack <target>', 'line-err');
+                    return;
+                }
+                const target = args[0].toLowerCase();
+                const room = ROOMS[state.room];
+                const h = room.hackables[target];
+                if (!h) {
+                    println("[ERR] Nothing to hack called '" + target + "'.", 'line-err');
+                    return;
+                }
+                println('[HACK] Attempting handshake with ' + target + '...', 'line-muted');
+                const hasAll = h.requires.every(id => state.inventory.includes(id));
+                setTimeout(() => {
+                    if (hasAll) h.onSuccess();
+                    else        h.onFail();
+                }, 450);
+            }
+        },
+        whoami: {
+            aliases: [],
+            help: 'whoami — declare or display current identity',
+            run() {
+                if (state.phase === 'identify') {
+                    askForAlias();
+                    return;
+                }
+                const alias = state.identity.alias || DEFAULT_ALIAS;
+                println('id:      ' + alias,          'line-info');
+                println('alias:   root',              'line-muted');
+                println('origin:  Zaragoza.edge',     'line-muted');
+                println('status:  ghost-in-the-wire', 'line-ok');
+            }
+        },
+        clear: {
+            aliases: ['cls'],
+            help: 'clear — clear the screen',
+            run() { clearOutput(); }
+        },
+        exit: {
+            aliases: ['quit'],
+            help: 'exit — return to the portfolio',
+            run() {
+                println('[SYSTEM] Dumping session... goodbye.', 'line-sys');
+                input.disabled = true;
+                setTimeout(() => { window.location.href = 'index.html'; }, 650);
+            }
+        }
+    };
+
+    /* ═══════════════════════════════════════
+       PARSER
+    ═══════════════════════════════════════ */
+    function resolveCommand(name) {
+        if (COMMANDS[name]) return COMMANDS[name];
+        for (const key in COMMANDS) {
+            if (COMMANDS[key].aliases && COMMANDS[key].aliases.includes(name)) {
+                return COMMANDS[key];
+            }
+        }
+        return null;
+    }
+
+    function runLine(raw) {
+        const trimmed = raw.trim();
+        if (!trimmed) return;
+        echoCmd(trimmed);
+        state.history.push(trimmed);
+        state.historyIdx = state.history.length;
+
+        const parts = trimmed.split(/\s+/);
+        const name  = parts[0].toLowerCase();
+        const args  = parts.slice(1);
+        const cmd   = resolveCommand(name);
+        if (!cmd) {
+            println("[ERR] Unknown command '" + name + "'. Try 'help'.", 'line-err');
+            return;
+        }
+        if (state.phase === 'identify') {
+            const allowed = [COMMANDS.whoami, COMMANDS.help, COMMANDS.clear, COMMANDS.exit];
+            if (!allowed.includes(cmd)) {
+                println('[SYSTEM] Identify yourself first. Type "whoami".', 'line-sys');
+                return;
+            }
+        }
+        try { cmd.run(args); }
+        catch (err) {
+            println('[ERR] Internal error: ' + err.message, 'line-err');
+        }
+    }
+
+    /* ═══════════════════════════════════════
+       AUTOCOMPLETE (Tab)
+    ═══════════════════════════════════════ */
+    function autocomplete() {
+        const value = input.value;
+        if (value.includes(' ')) return;
+        const prefix = value.toLowerCase();
+        if (!prefix) return;
+        const pool = new Set();
+        Object.keys(COMMANDS).forEach(k => {
+            pool.add(k);
+            (COMMANDS[k].aliases || []).forEach(a => pool.add(a));
+        });
+        const matches = [...pool].filter(c => c.startsWith(prefix)).sort();
+        if (matches.length === 0) return;
+        if (matches.length === 1) {
+            input.value = matches[0] + ' ';
+            return;
+        }
+        println('  ' + matches.join('  '), 'line-muted');
+    }
+
+    /* ═══════════════════════════════════════
+       INPUT EVENTS
+    ═══════════════════════════════════════ */
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        if (!state.bootDone) return;
+        const raw = input.value;
+        input.value = '';
+
+        if (state.awaiting === 'alias') {
+            const alias = sanitizeAlias(raw);
+            echoCmd(raw.trim() ? raw.trim() : '(default)');
+            state.identity.alias = alias;
+            state.awaiting = null;
+            confirmIdentity();
+            return;
+        }
+
+        runLine(raw);
+    });
+
+    input.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            if (state.history.length === 0) return;
+            state.historyIdx = Math.max(0, state.historyIdx - 1);
+            input.value = state.history[state.historyIdx] || '';
+            setTimeout(() => input.setSelectionRange(input.value.length, input.value.length));
+        } else if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            if (state.history.length === 0) return;
+            state.historyIdx = Math.min(state.history.length, state.historyIdx + 1);
+            input.value = state.history[state.historyIdx] || '';
+        } else if (e.key === 'Tab') {
+            e.preventDefault();
+            autocomplete();
+        } else if (e.key === 'l' && e.ctrlKey) {
+            e.preventDefault();
+            clearOutput();
+        }
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!state.bootDone) return;
+        if (e.target.closest('a')) return;
+        input.focus();
+    });
+
+    /* ═══════════════════════════════════════
+       BOOT SEQUENCE
+    ═══════════════════════════════════════ */
+    const bootLines = [
+        { text: '[BIOS] POST check ............................ OK',     cls: 'line-ok',   delay: 250 },
+        { text: '[BOOT] Loading kernel /dev/neural ............ OK',     cls: 'line-ok',   delay: 350 },
+        { text: '[BOOT] Mounting /mnt/wetware ................. OK',     cls: 'line-ok',   delay: 280 },
+        { text: '[INIT] Handshake with city grid .............. OK',     cls: 'line-ok',   delay: 320 },
+        { text: '[INIT] Scanning for sentinels ................ clear',  cls: 'line-info', delay: 300 },
+        { text: '',                                                       cls: '',         delay: 200 }
+    ];
+
+    function runBoot(idx) {
+        if (idx >= bootLines.length) {
+            printAscii(ART_BOOT_LOGO, '');
+            setTimeout(() => {
+                println('', '');
+                println('S4MUR41DAEMON_OS v0.1 loaded.', 'line-info');
+                println('Type "help" to see available commands.', 'line-muted');
+                state.bootDone = true;
+                state.phase = 'identify';
+                askForAlias();
+                input.disabled = false;
+                input.focus();
+            }, 400);
+            return;
+        }
+        const line = bootLines[idx];
+        if (line.text === '') {
+            setTimeout(() => runBoot(idx + 1), line.delay);
+            return;
+        }
+        println(line.text, line.cls);
+        setTimeout(() => runBoot(idx + 1), line.delay);
+    }
+
+    runBoot(0);
+})();
+</script>
+</body>
+</html>
